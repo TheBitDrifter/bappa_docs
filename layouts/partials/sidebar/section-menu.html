@@ -1,0 +1,5 @@
+{{- $rootSection := .CurrentSection }}
+{{- with $rootSection }}
+  {{ partial "sidebar/render-section-menu.html" (dict "currentPage" $ "nodes" .Pages) }}
+{{- end }}
+

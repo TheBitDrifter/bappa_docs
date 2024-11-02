@@ -1,0 +1,17 @@
+.env
+.netlify
+.hugo_build.lock
+node_modules
+public
+*.tfstate
+*.tfstate.*
+.terraform
+.terraform.lock.hcl
+resources/
+.devcontainer
+.vscode
+.idea
+node_modules/
+npm-debug.log
+yarn-error.log
+.DS_Store

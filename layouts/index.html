@@ -1,0 +1,40 @@
+{{ define "main" }}
+<section class="section container-fluid mt-n3 pb-3">
+  <div class="row justify-content-center">
+    <div class="col-lg-12 text-center">
+      <img id="main-page-logo" src="logo.svg" alt="Bappa Collection Logo" />
+      <h1>{{ .Title }}</h1>
+    </div>
+    <div class="col-lg-9 col-xl-8 text-center">
+      <p class="lead">{{ .Params.lead | safeHTML }}</p>
+      <p id="disclaimer">EARLY DEVELOPMENT NOTICE: This game engine is a personal project in its early development stages. Features and documentation are subject to frequent changes, and things may break unexpectedly as development progresses. Please consider this ongoing evolution when experimenting with or building upon this project.</p>
+      <a class="btn btn-primary btn-cta rounded-pill btn-lg my-3" href="/docs/introduction-to-bappa" role="button">Get Started!</a>
+      {{ .Content }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{ define "sidebar-prefooter" }}
+  {{ if site.Params.doks.backgroundDots -}}
+  <div class="d-flex justify-content-start">
+    <div class="bg-dots"></div>
+  </div>
+  {{ end -}}
+  {{ if eq $.Site.Language.LanguageName "English" }}
+  <section class="section section-md section-features">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-5">
+        </div>
+        <div class="col-lg-5">
+        </div>
+        <div class="col-lg-5">
+          <br></br>
+        </div>
+      
+      </div>
+    </div>
+  </section>
+  {{ end }}
+{{ end }}

@@ -1,0 +1,40 @@
+{{ $src := .Get "src" | default "main.html" }}
+{{ $autoplay := .Get "autoplay" | default "true" }}
+
+<style>
+  .responsive-iframe-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 75%; /* 4:3 Aspect Ratio */
+    margin: 1rem 0;
+    border: 2px solid #d65d0e;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(214, 93, 14, 0.2);
+  }
+
+  /* If you want 16:9 aspect ratio, change padding-top to 56.25% */
+  
+  .responsive-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+  }
+</style>
+
+<div class="responsive-iframe-container">
+  <iframe 
+    class="responsive-iframe"
+    src="/wasmhtml/{{ $src }}"
+    frameborder="0"
+    autofocus
+    allowfullscreen
+    {{ if eq $autoplay "true" }}allow="autoplay; fullscreen; picture-in-picture"{{ else }}allow="fullscreen; picture-in-picture"{{ end }}
+  ></iframe>
+</div>
