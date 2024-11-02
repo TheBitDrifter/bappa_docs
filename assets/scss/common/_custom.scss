@@ -1,0 +1,37 @@
+// Put your custom SCSS code here
+
+#navbar-logo {
+  width: 40px;
+  margin-bottom: 38px;
+  margin-right: -18px;
+}
+.navbar,
+.doks-subnavbar {
+  background-color: hsla(0deg, 0%, 16%, 0.95) !important;
+}
+
+.bg-dots {
+  background-image: radial-gradient($navbar-dark-color, 15%, transparent 15%) !important;
+}
+ #main-page-logo {
+   height: calc(1.875rem + 3.7vw);
+   margin-bottom: 20px;
+ }
+
+.social-link {
+  color: $navbar-dark-color !important;
+}
+.social-link:hover {
+  color: $navbar-dark-hover-color !important;
+}
+
+body {
+  p {
+    color: var(--sl-color-gray-2);
+  }
+}
+
+#disclaimer {
+  font-size: 14px;
+  color: #e8a944;
+}
