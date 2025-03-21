@@ -1,0 +1,11 @@
+
+
+
+<!DOCTYPE html>
+<script src="/wasmjs/exec.js"></script>
+<script>
+const go = new Go();
+WebAssembly.instantiateStreaming(fetch("../../wasmbin/templates/platformer_split_ldtk.wasm"), go.importObject).then(result => {
+    go.run(result.instance);
+});
+</script>

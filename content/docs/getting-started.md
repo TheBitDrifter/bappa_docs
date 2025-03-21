@@ -176,16 +176,9 @@ go run .            # Runs the game
 
 Your game window should open, and you can start playing with the default controls (described in project readme).
 
-## Example Templates in Action
+## Preview Templates in Action
 
-You can see each template in action in our examples:
-
-- [Topdown Demo](/examples/templates/topdown) - Try out the basic top-down template
-- [Platformer Demo](/examples/templates/platformer) - Experience the platformer physics and controls
-- [Split-screen Topdown](/examples/templates/topdown-split-screen) - Topdown with local co op
-- [Split-screen Platformer](/examples/templates/platformer-split-screen) - Platformer with local co op
-
-These demos give you a good idea of what you can create with Bappa right out of the box.
+Before picking a template, you can preview them [here](/examples/templates)!
 
 ## Next Steps
 
@@ -196,5 +189,5 @@ Now that you have your game project set up, here are some next steps to consider
 3. **Customize game mechanics**: Adjust player movement, physics, or add new features
 4. **Add game objects**: Create enemies, collectibles, or interactive elements
 5. **Design levels**: Create new maps or scenes for your game
-   - For LDtk templates, download the [LDtk level editor](https://ldtk.io/) to create and edit your game levels
-6. Learn from [examples](/examples) — Study our example projects repository for common implementations and patterns
+   - [LDtk level editor](https://ldtk.io/) to create and edit your game levels
+6. Learn from [examples](/examples) — Use our example projects for common implementations and patterns
