@@ -93,13 +93,15 @@ The `username/` prefix is important as it will be used to create the proper Go m
 
 Bappa offers several pre-built templates to jumpstart your game development:
 
-| Template           | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| `topdown`          | A top-down perspective game (default)             |
-| `topdown-split`    | A top-down game with split-screen co-op support   |
-| `platformer`       | A simple platformer game                          |
-| `platformer-split` | A platformer game with split-screen co-op support |
-| `sandbox`          | An open sandbox game environment                  |
+| Template                | Description                                         |
+| ----------------------- | --------------------------------------------------- |
+| `topdown`               | A top-down perspective game (default)               |
+| `topdown-split`         | A top-down game with split-screen co-op support     |
+| `platformer`            | A simple platformer game                            |
+| `platformer-split`      | A platformer game with split-screen co-op support   |
+| `platformer-ldtk`       | A platformer using LDtk level editor integration    |
+| `platformer-split-ldtk` | A platformer with split-screen and LDtk integration |
+| `sandbox`               | An open sandbox game environment                    |
 
 ### Template Features
 
@@ -107,6 +109,7 @@ Each template comes with different features and setups:
 
 - **Topdown Template**: Includes a player character, 8-directional movement, camera following, physics, collision resolution, and vertical sort rendering
 - **Platformer Template**: Includes player movement, physics, collision detection, one-way platforms, and slope support
+- **LDtk Platformer Templates**: Include integration with the [LDtk level editor](https://ldtk.io/) for easy level design and importing
 - **Split-Screen Templates**: Add multiplayer functionality with split-screen support for two or more players
 - **Sandbox Template**: Provides an minimal environment for maximum creative freedom
 
@@ -128,6 +131,14 @@ If you want to create a platformer game with split-screen co-op support:
 
 ```bash
 bappacreate johndoe/my-platformer --template platformer-split
+```
+
+### Example: Creating a Platformer with LDtk Integration
+
+To create a platformer that uses the LDtk level editor:
+
+```bash
+bappacreate johndoe/my-ldtk-game --template platformer-ldtk
 ```
 
 ## Project Structure
@@ -185,4 +196,5 @@ Now that you have your game project set up, here are some next steps to consider
 3. **Customize game mechanics**: Adjust player movement, physics, or add new features
 4. **Add game objects**: Create enemies, collectibles, or interactive elements
 5. **Design levels**: Create new maps or scenes for your game
+   - For LDtk templates, download the [LDtk level editor](https://ldtk.io/) to create and edit your game levels
 6. Learn from [examples](/examples) — Study our example projects repository for common implementations and patterns
