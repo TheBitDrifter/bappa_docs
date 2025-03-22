@@ -1,7 +1,6 @@
 ---
 title: "Drifting Through Code: My Journey to Building Bappa"
-description: "My personal journey from burnout to building a modular game development framework in Go"
-summary: "How stepping away from professional development led to creating Bappa, a lightweight game framework"
+description: "My personal journey to building a modular game development framework in Go"
 date: 2025-03-17T16:27:22+02:00
 lastmod: 2025-03-17T16:27:22+02:00
 draft: false
