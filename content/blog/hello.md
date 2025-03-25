@@ -52,3 +52,5 @@ Maybe you'll find Bappa useful for your own projects. Maybe the code will spark 
 And that's completely okay.
 
 Happy Coding!
+
+Best, TBD
