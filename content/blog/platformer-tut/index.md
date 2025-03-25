@@ -1,5 +1,5 @@
 ---
-title: "Building a Basic Platformer old"
+title: "Building a Basic Platformer"
 description: "A tutorial detailing how to create a basic platformer with the Bappa Framework"
 date: 2025-03-17T16:27:22+02:00
 lastmod: 2025-03-17T16:27:22+02:00
@@ -13,13 +13,30 @@ toc: true
 
 While the Bappa Framework comes with templates, documentation, and examples, nothing beats a good old-fashioned tutorial. In this guide, we'll explore building the foundation for a simple platformer using the Bappa Framework.
 
+This tutorial takes you through each step of creating a 2D platformer from scratch, covering everything from setting up the project to implementing gameplay mechanics like jumping, collisions, one-way platforms, and animations. Whether you're new to Bappa or looking to deepen your understanding of game development with Go, this tutorial will provide a solid foundation.
+
+If you'd like to see the code at each stage of development, you can find the corresponding commits in the [tutorial repository](https://github.com/TheBitDrifter/bappa-blog-platformer-basic/commits/main/). Each section in this tutorial has its own commit, making it easy to follow along or jump to a specific implementation.
+
+## Demo
+
+{{< callout context="note" title="Instructions" icon="outline/info-circle" >}}
+
+- Click on demo to allow inputs
+- Controls: WASD
+
+{{< /callout >}}
+
+{{< wasm-demo src="templates/platformer_tut.html" width="640px" height="360" autoplay="true" >}}
+
 ## Project Setup
 
-Although [bappacreate](https://github.com/TheBitDrifter/bappacreate) is typically recommended for new projects, we'll start from the most basic setup to better understand the framework's fundamentals.
+Let's get started by setting up our project!
+
+Although [bappacreate](https://github.com/TheBitDrifter/bappacreate) is typically recommended for new projects, we'll start from the most basic repository to better understand the framework's fundamentals.
 
 ### Initial Project Structure
 
-- Download the base project from [github](https://github.com/TheBitDrifter/bappa_platformer_tut/releases/tag/base-project)
+- Download the base project from [github](https://github.com/TheBitDrifter/bappa-blog-platformer-basic/releases/tag/base-project)
 - The template includes only the essential assets and an initialized Go module named `platformer`
 
 ### Creating the Main File
@@ -2069,6 +2086,8 @@ In this tutorial, we've built a solid foundation for a platformer game with the 
 - Solid terrain blocks with collision detection
 - One-way platforms with drop-through functionality
 - Animation that responds to player state
+
+### Conclusion
 
 Thanks for following along, Happy coding!
 
