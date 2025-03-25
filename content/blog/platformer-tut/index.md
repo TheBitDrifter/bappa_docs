@@ -1,7 +1,7 @@
 ---
 title: "Building a Basic Platformer"
 description: "A tutorial detailing how to create a basic platformer with the Bappa Framework"
-date: 2025-03-17T16:27:22+02:00
+date: 2025-03-25T16:27:22+02:00
 lastmod: 2025-03-17T16:27:22+02:00
 draft: false
 weight: 80
