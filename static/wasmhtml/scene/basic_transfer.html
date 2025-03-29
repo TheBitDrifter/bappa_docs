@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <script src="/wasmjs/exec.js"></script>
+<script src="/wasmjs/loader.js"></script>
 <script>
 const go = new Go();
 WebAssembly.instantiateStreaming(fetch("../../wasmbin/scene/transfer.wasm"), go.importObject).then(result => {
