@@ -219,10 +219,10 @@ Here's an example of a simple movement system that applies velocity to position:
 package physics
 
 import (
-    "github.com/TheBitDrifter/blueprint"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
-    "github.com/TheBitDrifter/warehouse"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+    "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 // MovementSystem applies velocity to position for all entities with both components
@@ -233,16 +233,16 @@ func (sys MovementSystem) Run(scene blueprint.Scene, dt float64) error {
 
     // Create a query that queries for entities with both Position and Dynamics components
     query := warehouse.Factory.NewQuery().And(
-      blueprintspatial.Components.Position,
-      blueprintmotion.Components.Dynamics,
+      spatial.Components.Position,
+      motion.Components.Dynamics,
     )
     cursor := scene.NewCursor(query)
 
     // Process each matching entity
     for range cursor.Next() {
         // Get the components we need
-        position := blueprintspatial.Components.Position.GetFromCursor(cursor)
-        dynamics := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
+        position := spatial.Components.Position.GetFromCursor(cursor)
+        dynamics := motion.Components.Dynamics.GetFromCursor(cursor)
 
         // Apply velocity to position
         position.X += dynamics.Vel.X
@@ -261,25 +261,25 @@ Here's an example of a system that plays a jump sound when the jump input is det
 package systems
 
 import (
-    "github.com/TheBitDrifter/blueprint"
-    blueprintclient "github.com/TheBitDrifter/blueprint/client"
-    blueprintinput "github.com/TheBitDrifter/blueprint/input"
-    "github.com/TheBitDrifter/coldbrew"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/blueprint/client"
+    "github.com/TheBitDrifter/bappa/blueprint/input"
+    "github.com/TheBitDrifter/bappa/coldbrew"
 )
 
 // JumpSoundSystem plays sound effects when a jump input is detected
 type JumpSoundSystem struct{}
 
 // Run processes the system logic
-func (sys JumpSoundSystem) Run(client coldbrew.LocalClient, scene coldbrew.Scene) error {
+func (sys JumpSoundSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene) error {
     // Create a cursor that queries for entities with both InputBuffer and SoundBundle
     cursor := scene.NewCursor(blueprint.Queries.InputSoundBundle)
 
     // Process each matching entity
     for range cursor.Next() {
         // Get the components we need
-        inputBuffer := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
-        soundBundle := blueprintclient.Components.SoundBundle.GetFromCursor(cursor)
+        inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
+        soundBundle := client.Components.SoundBundle.GetFromCursor(cursor)
 
         // Process all inputs in the buffer
         for _, input := range inputBuffer.Inputs {
@@ -313,10 +313,10 @@ package rendersystems
 import (
     "image/color"
 
-    "github.com/TheBitDrifter/blueprint"
-    blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
-    "github.com/TheBitDrifter/blueprint/vector"
-    "github.com/TheBitDrifter/coldbrew"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+    "github.com/TheBitDrifter/bappa/blueprint/vector"
+    "github.com/TheBitDrifter/bappa/coldbrew"
     "github.com/TheBitDrifter/mygame/components"
     "github.com/hajimehoshi/ebiten/v2"
 )
@@ -328,7 +328,7 @@ type HealthBarRenderer struct{}
 func (sys HealthBarRenderer) Render(scene coldbrew.Scene, screen coldbrew.Screen, camUtil coldbrew.CameraUtility) {
     // Create a query for entities with Position and Health components
     query := blueprint.Factory.NewQuery().And(
-        blueprintspatial.Components.Position,
+        spatial.Components.Position,
         components.Health,
     )
 
@@ -348,7 +348,7 @@ func (sys HealthBarRenderer) Render(scene coldbrew.Scene, screen coldbrew.Screen
 
     // Process each entity
     for range cursor.Next() {
-        position := blueprintspatial.Components.Position.GetFromCursor(cursor)
+        position := spatial.Components.Position.GetFromCursor(cursor)
         health := components.Health.GetFromCursor(cursor)
 
         // Calculate health percentage

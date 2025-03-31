@@ -43,13 +43,13 @@ Here's a simple pseudo example of a Blueprint Plan that creates a basic platform
 func SimplePlatformerLevel(height, width int, sto warehouse.Storage) error {
     // Create player archetype
     playerArchetype, err := sto.NewOrExistingArchetype(
-        blueprintspatial.Components.Position,
-        blueprintclient.Components.SpriteBundle,
-        blueprintspatial.Components.Direction,
-        blueprintinput.Components.InputBuffer,
-        blueprintclient.Components.CameraIndex,
-        blueprintspatial.Components.Shape,
-        blueprintmotion.Components.Dynamics,
+        spatial.Components.Position,
+        client.Components.SpriteBundle,
+        spatial.Components.Direction,
+        input.Components.InputBuffer,
+        client.Components.CameraIndex,
+        spatial.Components.Shape,
+        motion.Components.Dynamics,
     )
     if err != nil {
         return err
@@ -57,13 +57,13 @@ func SimplePlatformerLevel(height, width int, sto warehouse.Storage) error {
 
     // Generate player entity
     err = playerArchetype.Generate(1,
-        blueprintspatial.NewPosition(180, 180),
-        blueprintspatial.NewRectangle(18, 58),
-        blueprintmotion.NewDynamics(10),
-        blueprintspatial.NewDirectionRight(),
-        blueprintinput.InputBuffer{ReceiverIndex: 0},
-        blueprintclient.CameraIndex(0),
-        blueprintclient.NewSpriteBundle().
+        spatial.NewPosition(180, 180),
+        spatial.NewRectangle(18, 58),
+        motion.NewDynamics(10),
+        spatial.NewDirectionRight(),
+        input.InputBuffer{ReceiverIndex: 0},
+        client.CameraIndex(0),
+        client.NewSpriteBundle().
             AddSprite("characters/player.png", true).
             WithAnimations(animations.IdleAnimation, animations.RunAnimation).
             SetActiveAnimation(animations.IdleAnimation),
@@ -92,9 +92,9 @@ Archetypes are a fundamental concept in Bappa's ECS implementation. An archetype
 // Creating an archetype for terrain entities
 terrainArchetype, err := sto.NewOrExistingArchetype(
     components.TerrainTag,
-    blueprintclient.Components.SpriteBundle,
-    blueprintspatial.Components.Shape,
-    blueprintspatial.Components.Position,
+    client.Components.SpriteBundle,
+    spatial.Components.Shape,
+    spatial.Components.Position,
 )
 ```
 
@@ -113,9 +113,9 @@ Once you have an archetype, you can create entities from it using the `Generate(
 ```go
 // Generate a floor entity
 err = terrainArchetype.Generate(1,
-    blueprintspatial.NewPosition(400, 470),
-    blueprintspatial.NewRectangle(800, 50),
-    blueprintclient.NewSpriteBundle().
+    spatial.NewPosition(400, 470),
+    spatial.NewRectangle(800, 50),
+    client.NewSpriteBundle().
         AddSprite("terrain/floor.png", true).
         WithOffset(vector.Two{X: -400, Y: -25}),
 )
@@ -216,18 +216,18 @@ For entity types that appear in multiple scenes, create reusable functions:
 func createPlatform(sto warehouse.Storage, x, y float64, width float64) error {
     platformArchetype, err := sto.NewOrExistingArchetype(
         components.PlatformTag,
-        blueprintspatial.Components.Position,
-        blueprintspatial.Components.Shape,
-        blueprintclient.Components.SpriteBundle,
+        spatial.Components.Position,
+        spatial.Components.Shape,
+        client.Components.SpriteBundle,
     )
     if err != nil {
         return err
     }
 
     return platformArchetype.Generate(1,
-        blueprintspatial.NewPosition(x, y),
-        blueprintspatial.NewRectangle(width, 16),
-        blueprintclient.NewSpriteBundle().
+        spatial.NewPosition(x, y),
+        spatial.NewRectangle(width, 16),
+        client.NewSpriteBundle().
             AddSprite("terrain/platform.png", true).
             WithOffset(vector.Two{X: -width/2, Y: -8}),
     )
@@ -247,25 +247,25 @@ package scenes
 
 import (
  "github.com/TheBitDrifter/bappacreate/templates/topdown/components"
- blueprintclient "github.com/TheBitDrifter/blueprint/client"
- blueprintinput "github.com/TheBitDrifter/blueprint/input"
- blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
- blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
- "github.com/TheBitDrifter/warehouse"
+ "github.com/TheBitDrifter/bappa/blueprint/client"
+ "github.com/TheBitDrifter/bappa/blueprint/input"
+ "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+ "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+ "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 // These are slices of common component compositions for various archetypes.
 // Components can still be added or removed dynamically at runtime
 
 var PlayerComposition = []warehouse.Component{
- blueprintspatial.Components.Position,
- blueprintmotion.Components.Dynamics,
- blueprintclient.Components.SpriteBundle,
- blueprintinput.Components.InputBuffer,
- blueprintclient.Components.CameraIndex,
- blueprintspatial.Components.Shape,
- blueprintclient.Components.SoundBundle,
- blueprintspatial.Components.Direction,
+ spatial.Components.Position,
+ motion.Components.Dynamics,
+ client.Components.SpriteBundle,
+ input.Components.InputBuffer,
+ client.Components.CameraIndex,
+ spatial.Components.Shape,
+ client.Components.SoundBundle,
+ spatial.Components.Direction,
  components.DirectionEightComponent,
 }
 // ...
@@ -289,7 +289,7 @@ func (sto warehouse.Storage) error {
 func NewRamp(sto warehouse.Storage, x, y float64) error {
  // Augment the composition as needed
  composition := []warehouse.Component{
-  blueprintclient.Components.SpriteBundle,
+  client.Components.SpriteBundle,
  }
 
  // Then use the augmented version

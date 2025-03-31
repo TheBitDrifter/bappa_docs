@@ -47,10 +47,10 @@ Create dynamic objects with the `NewDynamics` function:
 
 ```go
 // Create a dynamic object with mass 10
-dynamics := blueprintmotion.NewDynamics(10)
+dynamics := motion.NewDynamics(10)
 
 // Create an immovable (static) object
-dynamicsStatic := blueprintmotion.NewDynamics(0) // 0 for static
+dynamicsStatic := motion.NewDynamics(0) // 0 for static
 ```
 
 ### Shape Component
@@ -59,19 +59,19 @@ The `Shape` component defines the physical shape of an entity for collision dete
 
 ```go
 // Create a rectangular shape for collision
-rectangle := blueprintspatial.NewRectangle(64, 32)
+rectangle := spatial.NewRectangle(64, 32)
 
 // Create a triangular platform (one-way collision)
-platform := blueprintspatial.NewTriangularPlatform(120, 16)
+platform := spatial.NewTriangularPlatform(120, 16)
 
 // Create a ramp with specified dimensions and slope
-ramp := blueprintspatial.NewDoubleRamp(200, 40, 0.2)
+ramp := spatial.NewDoubleRamp(200, 40, 0.2)
 
 // Create a custom polygon
  vertices := []vector.Two{
   // vetices for some custom convex shape
 }
-blueprintspatial.NewPolygon(vertices)
+spatial.NewPolygon(vertices)
 ```
 
 The system supports:
@@ -123,7 +123,7 @@ newPos, newRot := motion.Integrate(dynamics, position, rotation, deltaTime)
 // Update entity components with new values
 position.X = newPos.X
 position.Y = newPos.Y
-rotation = blueprintspatial.Rotation(newRot)
+rotation = spatial.Rotation(newRot)
 
 // Update world vertices for collision detection
 shape.Polygon.WorldVertices = spatial.UpdateWorldVertices(

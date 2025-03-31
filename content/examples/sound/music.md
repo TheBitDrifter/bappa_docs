@@ -24,13 +24,13 @@ import (
  "embed"
  "log"
 
- "github.com/TheBitDrifter/blueprint"
- blueprintclient "github.com/TheBitDrifter/blueprint/client"
+ "github.com/TheBitDrifter/bappa/blueprint"
 
- "github.com/TheBitDrifter/blueprint/vector"
- "github.com/TheBitDrifter/coldbrew"
- coldbrew_rendersystems "github.com/TheBitDrifter/coldbrew/rendersystems"
- "github.com/TheBitDrifter/warehouse"
+ "github.com/TheBitDrifter/bappa/blueprint/client"
+ "github.com/TheBitDrifter/bappa/blueprint/vector"
+ "github.com/TheBitDrifter/bappa/coldbrew"
+ "github.com/TheBitDrifter/bappa/coldbrew/coldbrew_rendersystems"
+ "github.com/TheBitDrifter/bappa/warehouse"
  "github.com/hajimehoshi/ebiten/v2"
  "github.com/hajimehoshi/ebiten/v2/inpututil"
  "github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -75,21 +75,21 @@ func main() {
  }
 }
 
-var musicSoundConfig = blueprintclient.SoundConfig{
+var musicSoundConfig = client.SoundConfig{
  Path:             "music.wav",
  AudioPlayerCount: 1,
 }
 
 func exampleScenePlan(height, width int, sto warehouse.Storage) error {
  spriteArchetype, err := sto.NewOrExistingArchetype(
-  blueprintclient.Components.SoundBundle,
+  client.Components.SoundBundle,
  )
  if err != nil {
   return err
  }
 
  err = spriteArchetype.Generate(1,
-  blueprintclient.NewSoundBundle().AddSoundFromConfig(musicSoundConfig),
+  client.NewSoundBundle().AddSoundFromConfig(musicSoundConfig),
  )
  if err != nil {
   return err
@@ -108,11 +108,11 @@ func (sys *musicSystem) Run(lc coldbrew.LocalClient, scene coldbrew.Scene) error
   sys.volume = 0
  }
 
- musicQuery := warehouse.Factory.NewQuery().And(blueprintclient.Components.SoundBundle)
+ musicQuery := warehouse.Factory.NewQuery().And(client.Components.SoundBundle)
  cursor := scene.NewCursor(musicQuery)
 
  for range cursor.Next() {
-  soundBundle := blueprintclient.Components.SoundBundle.GetFromCursor(cursor)
+  soundBundle := client.Components.SoundBundle.GetFromCursor(cursor)
 
   sound, _ := coldbrew.MaterializeSound(soundBundle, musicSoundConfig)
   player := sound.GetAny()

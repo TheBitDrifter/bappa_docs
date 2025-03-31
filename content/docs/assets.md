@@ -41,7 +41,7 @@ import (
     "embed"
     "log"
 
-    "github.com/TheBitDrifter/coldbrew"
+    "github.com/TheBitDrifter/bappa/coldbrew"
 )
 
 //go:embed assets/*
@@ -90,7 +90,7 @@ In Bappa, sprites are managed using `SpriteBundle` components. A sprite bundle c
 
 ```go
 // Create a sprite bundle with a single sprite
-spriteBundle := blueprintclient.NewSpriteBundle().
+spriteBundle := client.NewSpriteBundle().
     AddSprite("characters/player.png", true)
 ```
 
@@ -100,7 +100,7 @@ The second parameter (`true`) indicates that the sprite should be active by defa
 
 ```go
 // Create a sprite with offset and scale
-spriteBundle := blueprintclient.NewSpriteBundle().
+spriteBundle := client.NewSpriteBundle().
     AddSprite("terrain/platform.png", true).
     WithOffset(vector.Two{X: -64, Y: -16})
 ```
@@ -113,7 +113,7 @@ Static sprites don't move with the camera - they remain fixed on the screen. Thi
 
 ```go
 // Create a static sprite for UI/HUD elements
-spriteBundle := blueprintclient.NewSpriteBundle().
+spriteBundle := client.NewSpriteBundle().
     AddSprite("ui/health_bar.png", true).
     WithOffset(vector.Two{X: 10, Y: 10}).
     WithStatic(true)
@@ -124,7 +124,7 @@ spriteBundle := blueprintclient.NewSpriteBundle().
 Control render order:
 
 ```go
-spriteBundle := blueprintclient.NewSpriteBundle().
+spriteBundle := client.NewSpriteBundle().
     AddSprite("effects/particle.png", true).
     WithPriority(10)              // Higher priority = rendered on top
 ```
@@ -134,7 +134,7 @@ spriteBundle := blueprintclient.NewSpriteBundle().
 For special rendering effects, you can use the `WithCustomRenderer` method:
 
 ```go
-spriteBundle := blueprintclient.NewSpriteBundle().
+spriteBundle := client.NewSpriteBundle().
     AddSprite("effects/glow.png", true).
     WithCustomRenderer()
 
@@ -154,12 +154,12 @@ First, define your animations:
 package animations
 
 import (
-    "github.com/TheBitDrifter/blueprint/vector"
-    blueprintclient "github.com/TheBitDrifter/blueprint/client"
+    "github.com/TheBitDrifter/bappa/blueprint/vector"
+    "github.com/TheBitDrifter/bappa/blueprint/client"
 )
 
 // IdleAnimation defines the player's idle animation
-var IdleAnimation = blueprintclient.AnimationData{
+var IdleAnimation = client.AnimationData{
     FrameWidth:  144,   // Width of each frame in pixels
     FrameHeight: 128,   // Height of each frame
     FrameCount:  8,     // Number of frames in the animation
@@ -169,7 +169,7 @@ var IdleAnimation = blueprintclient.AnimationData{
 }
 
 // RunAnimation defines the player's run animation
-var RunAnimation = blueprintclient.AnimationData{
+var RunAnimation = client.AnimationData{
     FrameWidth:  144,
     FrameHeight: 128,
     FrameCount:  8,
@@ -178,7 +178,7 @@ var RunAnimation = blueprintclient.AnimationData{
 }
 
 // JumpAnimation defines the player's jump animation
-var JumpAnimation = blueprintclient.AnimationData{
+var JumpAnimation = client.AnimationData{
     FrameWidth:  144,
     FrameHeight: 128,
     FrameCount:  4,
@@ -192,7 +192,7 @@ Then use these animations with your sprite bundle:
 
 ```go
 // Create a sprite bundle with animations
-spriteBundle := blueprintclient.NewSpriteBundle().
+spriteBundle := client.NewSpriteBundle().
     AddSprite("characters/player_sheet.png", true).
     WithAnimations(
         animations.IdleAnimation,
@@ -215,10 +215,10 @@ import (
 
     "github.com/TheBitDrifter/bappa-platformer-example/animations"
     "github.com/TheBitDrifter/bappa-platformer-example/components"
-    "github.com/TheBitDrifter/blueprint"
-    blueprintclient "github.com/TheBitDrifter/blueprint/client"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    "github.com/TheBitDrifter/coldbrew"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/blueprint/client"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/coldbrew"
 )
 
 // PlayerAnimationSystem handles animation state changes based on player movement
@@ -229,11 +229,11 @@ func (PlayerAnimationSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene)
 
     for range cursor.Next() {
         // Get sprite bundle and first blueprint (main character sprite)
-        bundle := blueprintclient.Components.SpriteBundle.GetFromCursor(cursor)
+        bundle := client.Components.SpriteBundle.GetFromCursor(cursor)
         spriteBlueprint := &bundle.Blueprints[0]
 
         // Get dynamics for movement state
-        dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
+        dyn := motion.Components.Dynamics.GetFromCursor(cursor)
 
         // Check if player is on the ground
         grounded, onGround := components.OnGroundComponent.GetFromCursorSafe(cursor)
@@ -277,7 +277,7 @@ Similar to sprites, sounds are managed using `SoundBundle` components.
 
 ```go
 // Create a sound bundle with a single sound
-soundBundle := blueprintclient.NewSoundBundle().
+soundBundle := client.NewSoundBundle().
     AddSoundFromPath("sounds/jump.wav")
 ```
 
@@ -288,24 +288,24 @@ For more control over sounds, you can define sound configurations:
 ```go
 package sounds
 
-import blueprintclient "github.com/TheBitDrifter/blueprint/client"
+import "github.com/TheBitDrifter/bappa/blueprint/client"
 
 // Sound configurations
 var (
     // Jump sound with 3 concurrent players
-    Jump = blueprintclient.SoundConfig{
+    Jump = client.SoundConfig{
         Path:             "sfx/jump.wav",
         AudioPlayerCount: 3,
     }
 
     // Footstep sound with 5 concurrent players (for frequent sounds)
-    Footstep = blueprintclient.SoundConfig{
+    Footstep = client.SoundConfig{
         Path:             "sfx/footstep.wav",
         AudioPlayerCount: 5,
     }
 
     // Background music with 1 player (only needs to play once)
-    Music = blueprintclient.SoundConfig{
+    Music = client.SoundConfig{
         Path:             "music/level1.wav",
         AudioPlayerCount: 1,
     }
@@ -316,7 +316,7 @@ Then use these configurations with your sound bundle:
 
 ```go
 // Create a sound bundle with configured sounds
-soundBundle := blueprintclient.NewSoundBundle().
+soundBundle := client.NewSoundBundle().
     AddSoundFromConfig(sounds.Jump).
     AddSoundFromConfig(sounds.Footstep)
 ```
@@ -329,12 +329,12 @@ To play sounds, you need to retrieve the sound from the bundle and play it:
 
 ```go
 // In a system that handles player actions:
-func (sys PlayerSoundSystem) Run(client coldbrew.LocalClient, scene coldbrew.Scene) error {
+func (sys PlayerSoundSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene) error {
     cursor := scene.NewCursor(blueprint.Queries.PlayerEntity)
 
     for range cursor.Next() {
-        soundBundle := blueprintclient.Components.SoundBundle.GetFromCursor(cursor)
-        inputBuffer := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
+        soundBundle := client.Components.SoundBundle.GetFromCursor(cursor)
+        inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
 
         // Check for jump input
         for _, input := range inputBuffer.Inputs {

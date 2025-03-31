@@ -35,11 +35,11 @@ Bappa is built on the excellent [Ebiten](https://github.com/hajimehoshi/ebiten) 
 hardware-accelerated rendering and cross-platform support. The framework extends Ebiten's capabilities with a
 comprehensive set of tools including:
 
-- [Coldbrew:](https://github.com/TheBitDrifter/coldbrew) Main package handling client-side game operations
-- [Blueprint:](https://github.com/TheBitDrifter/blueprint) Core component definitions
-- [Table:](https://github.com/TheBitDrifter/table) Efficient data storage optimized for game objects
-- [Warehouse:](https://github.com/TheBitDrifter/warehouse) Entity management and querying system
-- [Tteokbokki:](https://github.com/TheBitDrifter/tteokbokki) Physics and collision detection systems
+- [Coldbrew:](https://github.com/TheBitDrifter/bappa/tree/main/coldbrew) Main package handling client-side game operations
+- [Table:](https://github.com/TheBitDrifter/bappa/tree/main/table) Efficient data storage optimized for game objects
+- [Warehouse:](https://github.com/TheBitDrifter/bappa/tree/main/warehouse) Entity management and querying system
+- [Tteokbokki:](https://github.com/TheBitDrifter/bappa/tree/main/tteokbokki) Physics and collision detection systems
+- [Blueprint:](https://github.com/TheBitDrifter/bappa/tree/main/blueprint) shared component definitions
 - [Mask:](https://github.com/TheBitDrifter/mask) Bitmasking utilities for component filtering
 
 ## Who is Bappa For?

@@ -43,13 +43,13 @@ if err != nil {
 
 // Define your game-specific input actions (usually in a separate file)
 var actions = struct {
-    Jump, MoveLeft, MoveRight, Attack, Interact blueprintinput.Input
+    Jump, MoveLeft, MoveRight, Attack, Interact input.Input
 }{
-    Jump:      blueprintinput.NewInput("jump"),
-    MoveLeft:  blueprintinput.NewInput("move_left"),
-    MoveRight: blueprintinput.NewInput("move_right"),
-    Attack:    blueprintinput.NewInput("attack"),
-    Interact:  blueprintinput.NewInput("interact"),
+    Jump:      input.NewInput("jump"),
+    MoveLeft:  input.NewInput("move_left"),
+    MoveRight: input.NewInput("move_right"),
+    Attack:    input.NewInput("attack"),
+    Interact:  input.NewInput("interact"),
 }
 
 // Map keyboard keys to game actions
@@ -135,17 +135,17 @@ To make entities respond to inputs, you need to add the `InputBuffer` component 
 ```go
 // Create a player entity with an input buffer component
 playerArchetype, err := sto.NewOrExistingArchetype(
-    blueprintspatial.Components.Position,
-    blueprintclient.Components.SpriteBundle,
-    blueprintinput.Components.InputBuffer,  // Input buffer component
+    spatial.Components.Position,
+    client.Components.SpriteBundle,
+    input.Components.InputBuffer,  // Input buffer component
     // Other components...
 )
 
 // Generate a player entity with the input buffer
 err = playerArchetype.Generate(1,
-    blueprintspatial.NewPosition(180, 180),
+    spatial.NewPosition(180, 180),
     // Other component values...
-    blueprintinput.InputBuffer{ReceiverIndex: 0},  // Connect to receiver 0
+    input.InputBuffer{ReceiverIndex: 0},  // Connect to receiver 0
 )
 ```
 
@@ -165,8 +165,8 @@ func (sys MovementSystem) Run(scene blueprint.Scene, dt float64) error {
 
     for range cursor.Next() {
         // Get the input buffer component
-        inputBuffer := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
-        position := blueprintspatial.Components.Position.GetFromCursor(cursor)
+        inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
+        position := spatial.Components.Position.GetFromCursor(cursor)
 
         // Check for "Move Right" input
         if _, hasMoveRight := inputBuffer.ConsumeInput(actions.MoveRight); hasMoveRight {
@@ -267,13 +267,13 @@ func (ExampleInputSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene) er
  cursor := scene.NewCursor(blueprint.Queries.InputBuffer)
 
  for range cursor.Next() {
-  buffer := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
+  buffer := input.Components.InputBuffer.GetFromCursor(cursor)
 
   // Extract the input that knows too much (while in a client system)
   if stickMovement, ok := buffer.ConsumeInput(actions.StickMovement); ok {
    // Create a input that knows just enough!
    if stickMovement.X > 20 {
-    buffer.Add(blueprintinput.StampedInput{
+    buffer.Add(input.StampedInput{
      Tick: scene.CurrentTick(),
      Val: actions.Right,
     })
@@ -313,13 +313,13 @@ receiver2.RegisterGamepadButton(ebiten.GamepadButton0, actions.Jump)
 // Player 1
 player1Arch.Generate(1,
     // Other components...
-    blueprintinput.InputBuffer{ReceiverIndex: 0},
+    input.InputBuffer{ReceiverIndex: 0},
 )
 
 // Player 2
 player2Arch.Generate(1,
     // Other components...
-    blueprintinput.InputBuffer{ReceiverIndex: 1},
+    input.InputBuffer{ReceiverIndex: 1},
 )
 ```
 
@@ -331,9 +331,9 @@ Bappa makes it easy to implement input remapping for player preferences:
 
 ```go
 // Function to update keyboard mappings
-func RemapKey(receiver coldbrew.Receiver, oldKey, newKey ebiten.Key, action blueprintinput.Input) {
+func RemapKey(receiver coldbrew.Receiver, oldKey, newKey ebiten.Key, action input.Input) {
     // Unregister by registering a no-op action
-    receiver.RegisterKey(oldKey, blueprintinput.NewInput("none"))
+    receiver.RegisterKey(oldKey, input.NewInput("none"))
 
     // Register the new key
     receiver.RegisterKey(newKey, action)

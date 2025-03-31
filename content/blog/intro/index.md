@@ -26,11 +26,11 @@ But code has a way of calling you back.
 
 During those months away from professional development, I started tinkering with a project that combined my love for programming with my interest in game development and Golang. What began as a simple experiment gradually evolved into Bappa.
 
-The journey of building this project has been one of continuous learning and growth. What started as experimental code gradually transformed into a structured system with clear boundaries and thoughtful organization. The framework's current form reflects many iterations, pragmatic decisions, and careful consideration of how everything fits together. Bappa represents both my technical development and my vision for a code-first game approach in Go.
+The journey of building this project has been one of continuous learning and growth. What started as experimental code gradually transformed into a structured system with clear boundaries and thoughtful organization. Crucially, this journey isn't just about building the framework itself; it's also about learning to build and share in public. Part of my motivation for sharing Bappa now, even as it continues to evolve and I'm still figuring out certain aspects, is a conscious effort to combat the perfectionism that can often stifle creative projects. I don't have every detail mapped out or every problem perfectly solved, and embracing that uncertainty by sharing the process feels like an important step in itself.
 
-Bappa's design is intentionally decoupled. The core packages have zero external dependencies, focusing purely on game simulation logic. The client layer (**coldbrew**) integrates with [Ebiten](https://github.com/hajimehoshi/ebiten) for rendering, input handling, and audio.
+This iterative process, driven by both technical goals and a desire to overcome perfectionist tendencies, shaped Bappa's current form. The framework reflects many pragmatic decisions and careful consideration of how everything fits together. Bappa represents both my technical development and my vision for a code-first game approach in Go.
 
-This separation emerged from thinking carefully about how different parts of a game engine should interact and what responsibilities each component should have.
+Bappa's design is intentionally decoupled. The core packages have zero external dependencies, focusing purely on game simulation logic. The client layer (coldbrew) integrates with [Ebiten](https://ebitengine.org/) for rendering, input handling, and audio. This separation emerged from thinking carefully about how different parts of a game engine should interact and what responsibilities each component should have.
 
 ## About Bappa
 

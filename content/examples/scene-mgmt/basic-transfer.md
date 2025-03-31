@@ -24,17 +24,18 @@ import (
  "embed"
  "log"
 
- "github.com/TheBitDrifter/blueprint"
- "github.com/TheBitDrifter/coldbrew"
- coldbrew_clientsystems "github.com/TheBitDrifter/coldbrew/clientsystems"
- coldbrew_rendersystems "github.com/TheBitDrifter/coldbrew/rendersystems"
- "github.com/TheBitDrifter/warehouse"
+ "github.com/TheBitDrifter/bappa/blueprint"
+ "github.com/TheBitDrifter/bappa/coldbrew"
+ "github.com/TheBitDrifter/bappa/coldbrew/coldbrew_clientsystems"
+ "github.com/TheBitDrifter/bappa/coldbrew/coldbrew_rendersystems"
+ "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+
+ "github.com/TheBitDrifter/bappa/warehouse"
  "github.com/hajimehoshi/ebiten/v2"
  "github.com/hajimehoshi/ebiten/v2/inpututil"
 
- blueprintclient "github.com/TheBitDrifter/blueprint/client"
- blueprintinput "github.com/TheBitDrifter/blueprint/input"
- blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
+ "github.com/TheBitDrifter/bappa/blueprint/client"
+ "github.com/TheBitDrifter/bappa/blueprint/input"
 )
 
 //go:embed assets/*
@@ -95,22 +96,22 @@ func main() {
 
 func sceneOnePlan(height, width int, sto warehouse.Storage) error {
  spriteArchetype, err := sto.NewOrExistingArchetype(
-  blueprintspatial.Components.Position,
-  blueprintclient.Components.SpriteBundle,
-  blueprintclient.Components.CameraIndex,
+  spatial.Components.Position,
+  client.Components.SpriteBundle,
+  client.Components.CameraIndex,
  )
  if err != nil {
   return err
  }
 
  err = spriteArchetype.Generate(1,
-  blueprintinput.Components.InputBuffer,
+  input.Components.InputBuffer,
 
-  blueprintspatial.NewPosition(255, 20),
-  blueprintclient.NewSpriteBundle().
+  spatial.NewPosition(255, 20),
+  client.NewSpriteBundle().
    AddSprite("sprite.png", true),
 
-  blueprintclient.CameraIndex(0),
+  client.CameraIndex(0),
  )
  err = blueprint.NewParallaxBackgroundBuilder(sto).
   AddLayer("sky.png", 0.1, 0.1).
@@ -184,7 +185,3 @@ func (basicTransferSystem) Run(cli coldbrew.Client) error {
  return nil
 }
 ```
-
-## Whats Next?
-
-So you've reached the last example? Feel free to take a deep dive into the [Bappa Docs!](/docs)
