@@ -26,14 +26,15 @@ import (
  "log"
  "math"
 
- "github.com/TheBitDrifter/blueprint"
- blueprintclient "github.com/TheBitDrifter/blueprint/client"
- blueprintinput "github.com/TheBitDrifter/blueprint/input"
- blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
- "github.com/TheBitDrifter/coldbrew"
- coldbrew_clientsystems "github.com/TheBitDrifter/coldbrew/clientsystems"
- coldbrew_rendersystems "github.com/TheBitDrifter/coldbrew/rendersystems"
- "github.com/TheBitDrifter/warehouse"
+ "github.com/TheBitDrifter/bappa/blueprint"
+ "github.com/TheBitDrifter/bappa/blueprint/client"
+ "github.com/TheBitDrifter/bappa/blueprint/input"
+ "github.com/TheBitDrifter/bappa/coldbrew"
+ "github.com/TheBitDrifter/bappa/coldbrew/coldbrew_clientsystems"
+ "github.com/TheBitDrifter/bappa/coldbrew/coldbrew_rendersystems"
+ "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+
+ "github.com/TheBitDrifter/bappa/warehouse"
  "github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -41,13 +42,13 @@ import (
 var assets embed.FS
 
 var actions = struct {
- Movement, Up, Down, Left, Right blueprintinput.Input
+ Movement, Up, Down, Left, Right input.Input
 }{
- Movement: blueprintinput.NewInput(),
- Up:       blueprintinput.NewInput(),
- Down:     blueprintinput.NewInput(),
- Left:     blueprintinput.NewInput(),
- Right:    blueprintinput.NewInput(),
+ Movement: input.NewInput(),
+ Up:       input.NewInput(),
+ Down:     input.NewInput(),
+ Left:     input.NewInput(),
+ Right:    input.NewInput(),
 }
 
 func lerp(start, end, t float64) float64 {
@@ -98,17 +99,17 @@ func main() {
 
 func exampleScenePlan(height, width int, sto warehouse.Storage) error {
  spriteArchetype, err := sto.NewOrExistingArchetype(
-  blueprintinput.Components.InputBuffer,
-  blueprintspatial.Components.Position,
-  blueprintclient.Components.SpriteBundle,
+  input.Components.InputBuffer,
+  spatial.Components.Position,
+  client.Components.SpriteBundle,
  )
  if err != nil {
   return err
  }
  err = spriteArchetype.Generate(1,
-  blueprintinput.Components.InputBuffer,
-  blueprintspatial.NewPosition(255, 20),
-  blueprintclient.NewSpriteBundle().
+  input.Components.InputBuffer,
+  spatial.NewPosition(255, 20),
+  client.NewSpriteBundle().
    AddSprite("sprite.png", true),
  )
  if err != nil {
@@ -124,13 +125,13 @@ type inputSystem struct {
 
 func (sys *inputSystem) Run(scene blueprint.Scene, dt float64) error {
  query := warehouse.Factory.NewQuery().
-  And(blueprintinput.Components.InputBuffer, blueprintspatial.Components.Position)
+  And(input.Components.InputBuffer, spatial.Components.Position)
 
  cursor := scene.NewCursor(query)
 
  for range cursor.Next() {
-  pos := blueprintspatial.Components.Position.GetFromCursor(cursor)
-  inputBuffer := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
+  pos := spatial.Components.Position.GetFromCursor(cursor)
+  inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
 
   if stampedMovement, ok := inputBuffer.ConsumeInput(actions.Movement); ok {
    sys.StickX = float64(stampedMovement.X)

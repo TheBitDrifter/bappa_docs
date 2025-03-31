@@ -166,8 +166,8 @@ To create new entities during gameplay:
 ```go
 // Create 5 new entities with the specified components
 err := scene.Storage().EnqueueNewEntities(5,
-    blueprintspatial.Components.Position,
-    blueprintclient.Components.SpriteBundle,
+    spatial.Components.Position,
+    client.Components.SpriteBundle,
     components.ParticleTag,
 )
 if err != nil {
@@ -251,25 +251,7 @@ if !hasComponent {
 }
 ```
 
-### 3. Batch Related Changes
-
-Group related entity changes together to maintain consistency:
-
-```go
-// Apply damage and check for death in one system
-func (d DamageSystem) ApplyDamage(entity warehouse.Entity, amount int) {
-    health := components.Health.GetFromEntity(entity)
-    health.Current -= amount
-
-    // Check for death and enqueue related changes
-    if health.Current <= 0 {
-        entity.EnqueueAddComponent(components.DeadTag)
-        entity.EnqueueRemoveComponent(components.ControllerTag)
-    }
-}
-```
-
-### 4. Use Components for State Changes
+### 3. Use Components for State Changes
 
 For simple state changes, use tag components:
 

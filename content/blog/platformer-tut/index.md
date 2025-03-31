@@ -3,7 +3,7 @@ title: "Building a Basic Platformer"
 description: "A tutorial detailing how to create a basic platformer with the Bappa Framework"
 date: 2025-03-25T16:27:22+02:00
 lastmod: 2025-03-17T16:27:22+02:00
-draft: false
+draft: true
 weight: 80
 contributors: ["TheBitDrifter"]
 pinned: false
@@ -49,7 +49,7 @@ package main
 import (
     "embed"
     "log"
-    "github.com/TheBitDrifter/coldbrew"
+    "github.com/TheBitDrifter/bappa/coldbrew"
 )
 
 //go:embed assets/*
@@ -92,7 +92,7 @@ Now that we have our `main.go` file, with the required imports, to install depen
 from your project directory:
 
 ```bash
-go get github.com/TheBitDrifter/coldbrew@latest
+go get github.com/TheBitDrifter/bappa/coldbrew@latest
 go mod tidy
 ```
 
@@ -117,7 +117,7 @@ First, let's create the base scene structure that we'll use throughout our game:
 ```go{title="scenes/scene.go"}
 package scenes
 
-import "github.com/TheBitDrifter/blueprint"
+import "github.com/TheBitDrifter/bappa/blueprint"
 
 type Scene struct {
     Name          string
@@ -134,8 +134,8 @@ Next, let's create our first scene with a parallax background:
 package scenes
 
 import (
-    "github.com/TheBitDrifter/blueprint"
-    "github.com/TheBitDrifter/warehouse"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 const SCENE_ONE_NAME = "scene one"
@@ -195,8 +195,8 @@ package main
 import (
     "embed"
     "log"
-    "github.com/TheBitDrifter/coldbrew"
-    coldbrew_rendersystems "github.com/TheBitDrifter/coldbrew/rendersystems"
+    "github.com/TheBitDrifter/bappa/coldbrew"
+    coldbrew_rendersystems "github.com/TheBitDrifter/bappa/coldbrew/rendersystems"
     "platformer/scenes"  // Import our scenes package
 )
 
@@ -294,11 +294,11 @@ Create an `/animations` directory in the project root and add the following file
 package animations
 
 import (
-    blueprintclient "github.com/TheBitDrifter/blueprint/client"
-    "github.com/TheBitDrifter/blueprint/vector"
+    "github.com/TheBitDrifter/bappa/blueprint/client"
+    "github.com/TheBitDrifter/bappa/blueprint/vector"
 )
 
-var IdleAnimation = blueprintclient.AnimationData{
+var IdleAnimation = client.AnimationData{
     Name:        "idle",
     RowIndex:    0,
     FrameCount:  6,
@@ -307,7 +307,7 @@ var IdleAnimation = blueprintclient.AnimationData{
     Speed:       8,
 }
 
-var RunAnimation = blueprintclient.AnimationData{
+var RunAnimation = client.AnimationData{
     Name:        "run",
     RowIndex:    1,
     FrameCount:  8,
@@ -316,7 +316,7 @@ var RunAnimation = blueprintclient.AnimationData{
     Speed:       5,
 }
 
-var JumpAnimation = blueprintclient.AnimationData{
+var JumpAnimation = client.AnimationData{
     Name:           "jump",
     RowIndex:       2,
     FrameCount:     3,
@@ -327,7 +327,7 @@ var JumpAnimation = blueprintclient.AnimationData{
     PositionOffset: vector.Two{X: 0, Y: 10},
 }
 
-var FallAnimation = blueprintclient.AnimationData{
+var FallAnimation = client.AnimationData{
     Name:           "fall",
     RowIndex:       3,
     FrameCount:     3,
@@ -358,44 +358,44 @@ Now let's add a helper function to create our player. Add this to your scenes fi
 import (
  "platformer/animations"
 
- "github.com/TheBitDrifter/blueprint"
- "github.com/TheBitDrifter/blueprint/vector"
- "github.com/TheBitDrifter/warehouse"
+ "github.com/TheBitDrifter/bappa/blueprint"
+ "github.com/TheBitDrifter/bappa/blueprint/vector"
+ "github.com/TheBitDrifter/bappa/warehouse"
 
  // New Imports:
- blueprintclient "github.com/TheBitDrifter/blueprint/client"
- blueprintinput "github.com/TheBitDrifter/blueprint/input"
- blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
- blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
+ "github.com/TheBitDrifter/bappa/blueprint/client"
+ input "github.com/TheBitDrifter/bappa/blueprint/input"
+ "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+ spatial "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
 )
 func NewPlayer(sto warehouse.Storage, x, y float64) error {
     // Get or create the archetype
     playerArchetype, err := sto.NewOrExistingArchetype(
-        blueprintspatial.Components.Position,
-        blueprintspatial.Components.Position,
-        blueprintspatial.Components.Shape,
-        blueprintspatial.Components.Direction,
-        blueprintmotion.Components.Dynamics,
-        blueprintinput.Components.InputBuffer,
-        blueprintclient.Components.CameraIndex,
-        blueprintclient.Components.SpriteBundle,
-        blueprintclient.Components.SoundBundle,
+        spatial.Components.Position,
+        spatial.Components.Position,
+        spatial.Components.Shape,
+        spatial.Components.Direction,
+        motion.Components.Dynamics,
+        input.Components.InputBuffer,
+        client.Components.CameraIndex,
+        client.Components.SpriteBundle,
+        client.Components.SoundBundle,
     )
 
     // Position state
-    playerPos := blueprintspatial.NewPosition(x, y)
+    playerPos := spatial.NewPosition(x, y)
     // Hitbox state
-    playerHitbox := blueprintspatial.NewRectangle(18, 58)
+    playerHitbox := spatial.NewRectangle(18, 58)
     // Physics state
-    playerDynamics := blueprintmotion.NewDynamics(10)
+    playerDynamics := motion.NewDynamics(10)
     // Basic Direction State
-    playerDirection := blueprintspatial.NewDirectionRight()
+    playerDirection := spatial.NewDirectionRight()
     // Input state
-    playerInputBuffer := blueprintinput.InputBuffer{ReceiverIndex: 0}
+    playerInputBuffer := input.InputBuffer{ReceiverIndex: 0}
     // Camera Reference
-    playerCameraIndex := blueprintclient.CameraIndex(0)
+    playerCameraIndex := client.CameraIndex(0)
     // Sprite Reference
-    playerSprites := blueprintclient.NewSpriteBundle().
+    playerSprites := client.NewSpriteBundle().
         AddSprite("characters/box_man_sheet.png", true).
         WithAnimations(animations.IdleAnimation, animations.RunAnimation, animations.FallAnimation, animations.JumpAnimation).
         SetActiveAnimation(animations.IdleAnimation).
@@ -470,14 +470,14 @@ First, let's create our action definitions:
 package actions
 
 import (
-    blueprintinput "github.com/TheBitDrifter/blueprint/input"
+    input "github.com/TheBitDrifter/bappa/blueprint/input"
 )
 
 var (
-    Left  = blueprintinput.NewInput()
-    Right = blueprintinput.NewInput()
-    Jump  = blueprintinput.NewInput()
-    Down  = blueprintinput.NewInput()
+    Left  = input.NewInput()
+    Right = input.NewInput()
+    Jump  = input.NewInput()
+    Down  = input.NewInput()
 )
 ```
 
@@ -491,7 +491,7 @@ package main
 import (
 
     // New Import:
-    coldbrew_clientsystems "github.com/TheBitDrifter/coldbrew/clientsystems"
+    coldbrew_clientsystems "github.com/TheBitDrifter/bappa/coldbrew/clientsystems"
 )
 
 func main() {
@@ -527,10 +527,10 @@ package coresystems
 
 import (
     "platformer/actions"
-    "github.com/TheBitDrifter/blueprint"
-    blueprintinput "github.com/TheBitDrifter/blueprint/input"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    input "github.com/TheBitDrifter/bappa/blueprint/input"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    spatial "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
 )
 
 const (
@@ -544,9 +544,9 @@ func (sys PlayerMovementSystem) Run(scene blueprint.Scene, dt float64) error {
     cursor := scene.NewCursor(blueprint.Queries.InputBuffer)
 
     for range cursor.Next() {
-        dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
-        incomingInputs := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
-        direction := blueprintspatial.Components.Direction.GetFromCursor(cursor)
+        dyn := motion.Components.Dynamics.GetFromCursor(cursor)
+        incomingInputs := input.Components.InputBuffer.GetFromCursor(cursor)
+        direction := spatial.Components.Direction.GetFromCursor(cursor)
 
         _, pressedLeft := incomingInputs.ConsumeInput(actions.Left)
         if pressedLeft {
@@ -578,9 +578,9 @@ func (sys PlayerMovementSystem) Run(scene blueprint.Scene, dt float64) error {
 package coresystems
 
 import (
-    "github.com/TheBitDrifter/blueprint"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    "github.com/TheBitDrifter/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
 )
 
 const (
@@ -595,7 +595,7 @@ func (FrictionSystem) Run(scene blueprint.Scene, dt float64) error {
     cursor := scene.NewCursor(blueprint.Queries.Dynamics)
     for range cursor.Next() {
         // Get the dynamics
-        dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
+        dyn := motion.Components.Dynamics.GetFromCursor(cursor)
         friction := motion.Forces.Generator.NewHorizontalFrictionForce(dyn.Vel, DEFAULT_FRICTION)
         motion.Forces.AddForce(dyn, friction)
 
@@ -609,8 +609,8 @@ func (FrictionSystem) Run(scene blueprint.Scene, dt float64) error {
 package coresystems
 
 import (
-    "github.com/TheBitDrifter/blueprint"
-    tteo_coresystems "github.com/TheBitDrifter/tteokbokki/coresystems"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    tteo_coresystems "github.com/TheBitDrifter/bappa/tteokbokki/coresystems"
 )
 
 var DefaultCoreSystems = []blueprint.CoreSystem{
@@ -670,12 +670,12 @@ package clientsystems
 
 import (
     "math"
-    blueprintclient "github.com/TheBitDrifter/blueprint/client"
-    blueprintinput "github.com/TheBitDrifter/blueprint/input"
-    blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
-    "github.com/TheBitDrifter/blueprint/vector"
-    "github.com/TheBitDrifter/coldbrew"
-    "github.com/TheBitDrifter/warehouse"
+    "github.com/TheBitDrifter/bappa/blueprint/client"
+    input "github.com/TheBitDrifter/bappa/blueprint/input"
+    spatial "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+    "github.com/TheBitDrifter/bappa/blueprint/vector"
+    "github.com/TheBitDrifter/bappa/coldbrew"
+    "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 type CameraFollowerSystem struct{}
@@ -684,17 +684,17 @@ func (CameraFollowerSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene) 
     // Query players who have a camera (camera index component)
     playersWithCamera := warehouse.Factory.NewQuery()
     playersWithCamera.And(
-        blueprintspatial.Components.Position,
-        blueprintinput.Components.InputBuffer,
-        blueprintclient.Components.CameraIndex,
+        spatial.Components.Position,
+        input.Components.InputBuffer,
+        client.Components.CameraIndex,
     )
     playerCursor := scene.NewCursor(playersWithCamera)
 
     for range playerCursor.Next() {
         // Get the players position
-        playerPos := blueprintspatial.Components.Position.GetFromCursor(playerCursor)
+        playerPos := spatial.Components.Position.GetFromCursor(playerCursor)
         // Get the players camera
-        camIndex := int(*blueprintclient.Components.CameraIndex.GetFromCursor(playerCursor))
+        camIndex := int(*client.Components.CameraIndex.GetFromCursor(playerCursor))
         cam := cli.Cameras()[camIndex]
         // Get the cameras local scene position
         _, cameraScenePosition := cam.Positions()
@@ -743,8 +743,8 @@ func lockCameraToSceneBoundaries(cam coldbrew.Camera, scene coldbrew.Scene, came
 package clientsystems
 
 import (
-    "github.com/TheBitDrifter/coldbrew"
-    coldbrew_clientsystems "github.com/TheBitDrifter/coldbrew/clientsystems"
+    "github.com/TheBitDrifter/bappa/coldbrew"
+    coldbrew_clientsystems "github.com/TheBitDrifter/bappa/coldbrew/clientsystems"
 )
 
 var DefaultClientSystems = []coldbrew.ClientSystem{
@@ -798,7 +798,7 @@ First, let's create component tags to differentiate between terrain types. Creat
 ```go{title="components/tags.go"}
 package components
 
-import "github.com/TheBitDrifter/warehouse"
+import "github.com/TheBitDrifter/bappa/warehouse"
 
 var (
     BlockTerrainTag = warehouse.FactoryNewComponent[struct{}]()
@@ -813,19 +813,19 @@ Next, let's add helper functions to create different types of terrain:
 ```go{title="scenes/scene.go"}
 func NewFloor(sto warehouse.Storage, y float64) error {
     terrainArchetype, err := sto.NewOrExistingArchetype(
-        blueprintclient.Components.SpriteBundle,
+        client.Components.SpriteBundle,
         components.BlockTerrainTag,
-        blueprintspatial.Components.Shape,
-        blueprintspatial.Components.Position,
-        blueprintmotion.Components.Dynamics,
+        spatial.Components.Shape,
+        spatial.Components.Position,
+        motion.Components.Dynamics,
     )
     if err != nil {
         return err
     }
     return terrainArchetype.Generate(1,
-        blueprintspatial.NewPosition(1500, y),
-        blueprintspatial.NewRectangle(4000, 50),
-        blueprintclient.NewSpriteBundle().
+        spatial.NewPosition(1500, y),
+        spatial.NewRectangle(4000, 50),
+        client.NewSpriteBundle().
             AddSprite("terrain/floor.png", true).
             WithOffset(vector.Two{X: -1500, Y: -25}),
     )
@@ -833,11 +833,11 @@ func NewFloor(sto warehouse.Storage, y float64) error {
 
 func NewInvisibleWalls(sto warehouse.Storage, width, height int) error {
     terrainArchetype, err := sto.NewOrExistingArchetype(
-        blueprintclient.Components.SpriteBundle,
+        client.Components.SpriteBundle,
         components.BlockTerrainTag,
-        blueprintspatial.Components.Shape,
-        blueprintspatial.Components.Position,
-        blueprintmotion.Components.Dynamics,
+        spatial.Components.Shape,
+        spatial.Components.Position,
+        motion.Components.Dynamics,
     )
     if err != nil {
         return err
@@ -845,8 +845,8 @@ func NewInvisibleWalls(sto warehouse.Storage, width, height int) error {
 
     // Wall left (invisible)
     err = terrainArchetype.Generate(1,
-        blueprintspatial.NewRectangle(10, float64(height+300)),
-        blueprintspatial.NewPosition(0, 0),
+        spatial.NewRectangle(10, float64(height+300)),
+        spatial.NewPosition(0, 0),
     )
     if err != nil {
         return err
@@ -854,26 +854,26 @@ func NewInvisibleWalls(sto warehouse.Storage, width, height int) error {
 
     // Wall right (invisible)
     return terrainArchetype.Generate(1,
-        blueprintspatial.NewRectangle(10, float64(height+300)),
-        blueprintspatial.NewPosition(float64(width), 0),
+        spatial.NewRectangle(10, float64(height+300)),
+        spatial.NewPosition(float64(width), 0),
     )
 }
 
 func NewBlock(sto warehouse.Storage, x, y float64) error {
     terrainArchetype, err := sto.NewOrExistingArchetype(
-        blueprintclient.Components.SpriteBundle,
+        client.Components.SpriteBundle,
         components.BlockTerrainTag,
-        blueprintspatial.Components.Shape,
-        blueprintspatial.Components.Position,
-        blueprintmotion.Components.Dynamics,
+        spatial.Components.Shape,
+        spatial.Components.Position,
+        motion.Components.Dynamics,
     )
     if err != nil {
         return err
     }
     return terrainArchetype.Generate(1,
-        blueprintspatial.NewPosition(x, y),
-        blueprintspatial.NewRectangle(64, 75),
-        blueprintclient.NewSpriteBundle().
+        spatial.NewPosition(x, y),
+        spatial.NewRectangle(64, 75),
+        client.NewSpriteBundle().
             AddSprite("terrain/block.png", true).
             WithOffset(vector.Two{X: -33, Y: -38}),
     )
@@ -919,12 +919,12 @@ package coresystems
 
 import (
     "platformer/components"
-    "github.com/TheBitDrifter/blueprint"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
-    "github.com/TheBitDrifter/tteokbokki/motion"
-    "github.com/TheBitDrifter/tteokbokki/spatial"
-    "github.com/TheBitDrifter/warehouse"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    spatial "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+    "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 type PlayerBlockCollisionSystem struct{}
@@ -950,14 +950,14 @@ func (s PlayerBlockCollisionSystem) Run(scene blueprint.Scene, dt float64) error
 
 func (PlayerBlockCollisionSystem) resolve(scene blueprint.Scene, blockCursor, playerCursor *warehouse.Cursor) error {
     // Get the player pos, shape, and dynamics
-    playerPosition := blueprintspatial.Components.Position.GetFromCursor(playerCursor)
-    playerShape := blueprintspatial.Components.Shape.GetFromCursor(playerCursor)
-    playerDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(playerCursor)
+    playerPosition := spatial.Components.Position.GetFromCursor(playerCursor)
+    playerShape := spatial.Components.Shape.GetFromCursor(playerCursor)
+    playerDynamics := motion.Components.Dynamics.GetFromCursor(playerCursor)
 
     // Get the block pos, shape, and dynamics
-    blockPosition := blueprintspatial.Components.Position.GetFromCursor(blockCursor)
-    blockShape := blueprintspatial.Components.Shape.GetFromCursor(blockCursor)
-    blockDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(blockCursor)
+    blockPosition := spatial.Components.Position.GetFromCursor(blockCursor)
+    blockShape := spatial.Components.Shape.GetFromCursor(blockCursor)
+    blockDynamics := motion.Components.Dynamics.GetFromCursor(blockCursor)
 
     // Check for a collision
     if ok, collisionResult := spatial.Detector.Check(
@@ -1036,11 +1036,11 @@ When we create terrain, we're defining a collection of components that make up t
 
 ```go
 terrainArchetype, err := sto.NewOrExistingArchetype(
-    blueprintclient.Components.SpriteBundle,    // Visual representation
+    client.Components.SpriteBundle,    // Visual representation
     components.BlockTerrainTag,                 // Type identifier
-    blueprintspatial.Components.Shape,          // Collision shape
-    blueprintspatial.Components.Position,       // World position
-    blueprintmotion.Components.Dynamics,        // Physics properties
+    spatial.Components.Shape,          // Collision shape
+    spatial.Components.Position,       // World position
+    motion.Components.Dynamics,        // Physics properties
 )
 ```
 
@@ -1140,9 +1140,9 @@ Now that we have working collisions, it's time to add gravity and create a 'prop
 package coresystems
 
 import (
-    "github.com/TheBitDrifter/blueprint"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    "github.com/TheBitDrifter/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
 )
 
 const (
@@ -1157,7 +1157,7 @@ func (GravitySystem) Run(scene blueprint.Scene, dt float64) error {
     cursor := scene.NewCursor(blueprint.Queries.Dynamics)
     for range cursor.Next() {
         // Get the dynamics
-        dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
+        dyn := motion.Components.Dynamics.GetFromCursor(cursor)
 
         // Get the mass
         mass := 1 / dyn.InverseMass
@@ -1194,7 +1194,7 @@ Now that we have gravity enabled, it's time to update the movement system. While
 
 package components
 
-import "github.com/TheBitDrifter/warehouse"
+import "github.com/TheBitDrifter/bappa/warehouse"
 
 type OnGround struct {
     Landed, LastTouch int
@@ -1212,14 +1212,14 @@ Now we need to update the `PlayerBlockCollisionSystem` to use this component:
 
 func (PlayerBlockCollisionSystem) resolve(scene blueprint.Scene, blockCursor, playerCursor *warehouse.Cursor) error {
     // Get the player pos, shape, and dynamics
-    playerPosition := blueprintspatial.Components.Position.GetFromCursor(playerCursor)
-    playerShape := blueprintspatial.Components.Shape.GetFromCursor(playerCursor)
-    playerDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(playerCursor)
+    playerPosition := spatial.Components.Position.GetFromCursor(playerCursor)
+    playerShape := spatial.Components.Shape.GetFromCursor(playerCursor)
+    playerDynamics := motion.Components.Dynamics.GetFromCursor(playerCursor)
 
     // Get the block pos, shape, and dynamics
-    blockPosition := blueprintspatial.Components.Position.GetFromCursor(blockCursor)
-    blockShape := blueprintspatial.Components.Shape.GetFromCursor(blockCursor)
-    blockDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(blockCursor)
+    blockPosition := spatial.Components.Position.GetFromCursor(blockCursor)
+    blockShape := spatial.Components.Shape.GetFromCursor(blockCursor)
+    blockDynamics := motion.Components.Dynamics.GetFromCursor(blockCursor)
 
     // Check for a collision
     if ok, collisionResult := spatial.Detector.Check(
@@ -1273,8 +1273,8 @@ package coresystems
 import (
     "platformer/components"
 
-    "github.com/TheBitDrifter/blueprint"
-    "github.com/TheBitDrifter/warehouse"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 type OnGroundClearingSystem struct{}
@@ -1331,10 +1331,10 @@ import (
     "platformer/actions"
     "platformer/components"
 
-    "github.com/TheBitDrifter/blueprint"
-    blueprintinput "github.com/TheBitDrifter/blueprint/input"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    input "github.com/TheBitDrifter/bappa/blueprint/input"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    spatial "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
 )
 
 const (
@@ -1349,9 +1349,9 @@ func (sys PlayerMovementSystem) Run(scene blueprint.Scene, dt float64) error {
     cursor := scene.NewCursor(blueprint.Queries.InputBuffer)
 
     for range cursor.Next() {
-        dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
-        incomingInputs := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
-        direction := blueprintspatial.Components.Direction.GetFromCursor(cursor)
+        dyn := motion.Components.Dynamics.GetFromCursor(cursor)
+        incomingInputs := input.Components.InputBuffer.GetFromCursor(cursor)
+        direction := spatial.Components.Direction.GetFromCursor(cursor)
         isGrounded := components.OnGroundComponent.CheckCursor(cursor)  // Check if player is on ground
 
         _, pressedLeft := incomingInputs.ConsumeInput(actions.Left)
@@ -1396,14 +1396,14 @@ Fortunately, these issues are easy to fix:
 
 func (PlayerBlockCollisionSystem) resolve(scene blueprint.Scene, blockCursor, playerCursor *warehouse.Cursor) error {
     // Get the player pos, shape, and dynamics
-    playerPosition := blueprintspatial.Components.Position.GetFromCursor(playerCursor)
-    playerShape := blueprintspatial.Components.Shape.GetFromCursor(playerCursor)
-    playerDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(playerCursor)
+    playerPosition := spatial.Components.Position.GetFromCursor(playerCursor)
+    playerShape := spatial.Components.Shape.GetFromCursor(playerCursor)
+    playerDynamics := motion.Components.Dynamics.GetFromCursor(playerCursor)
 
     // Get the block pos, shape, and dynamics
-    blockPosition := blueprintspatial.Components.Position.GetFromCursor(blockCursor)
-    blockShape := blueprintspatial.Components.Shape.GetFromCursor(blockCursor)
-    blockDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(blockCursor)
+    blockPosition := spatial.Components.Position.GetFromCursor(blockCursor)
+    blockShape := spatial.Components.Shape.GetFromCursor(blockCursor)
+    blockDynamics := motion.Components.Dynamics.GetFromCursor(blockCursor)
 
     // Check for a collision
     if ok, collisionResult := spatial.Detector.Check(
@@ -1490,18 +1490,18 @@ To get started let's define a helper function to create the platforms:
 func NewPlatform(sto warehouse.Storage, x, y float64) error {
     platformArche, err := sto.NewOrExistingArchetype(
         components.PlatformTag,
-        blueprintclient.Components.SpriteBundle,
-        blueprintspatial.Components.Shape,
-        blueprintspatial.Components.Position,
-        blueprintmotion.Components.Dynamics,
+        client.Components.SpriteBundle,
+        spatial.Components.Shape,
+        spatial.Components.Position,
+        motion.Components.Dynamics,
     )
     if err != nil {
         return err
     }
     return platformArche.Generate(1,
-        blueprintspatial.NewPosition(x, y),
-        blueprintspatial.NewTriangularPlatform(144, 16),
-        blueprintclient.NewSpriteBundle().
+        spatial.NewPosition(x, y),
+        spatial.NewTriangularPlatform(144, 16),
+        client.NewSpriteBundle().
             AddSprite("terrain/platform.png", true).
             WithOffset(vector.Two{X: -72, Y: -8}),
     )
@@ -1546,13 +1546,13 @@ package coresystems
 import (
     "platformer/components"
 
-    "github.com/TheBitDrifter/blueprint"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
-    "github.com/TheBitDrifter/blueprint/vector"
-    "github.com/TheBitDrifter/tteokbokki/motion"
-    "github.com/TheBitDrifter/tteokbokki/spatial"
-    "github.com/TheBitDrifter/warehouse"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    spatial "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+    "github.com/TheBitDrifter/bappa/blueprint/vector"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+    "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 type PlayerPlatformCollisionSystem struct {
@@ -1579,7 +1579,7 @@ func (s *PlayerPlatformCollisionSystem) Run(scene blueprint.Scene, dt float64) e
             if err != nil {
                 return err
             }
-            playerPos := blueprintspatial.Components.Position.GetFromCursor(playerCursor)
+            playerPos := spatial.Components.Position.GetFromCursor(playerCursor)
             s.trackPosition(playerPos.Two)
         }
     }
@@ -1588,14 +1588,14 @@ func (s *PlayerPlatformCollisionSystem) Run(scene blueprint.Scene, dt float64) e
 
 func (s *PlayerPlatformCollisionSystem) resolve(scene blueprint.Scene, platformCursor, playerCursor *warehouse.Cursor) error {
     // Get the player state
-    playerShape := blueprintspatial.Components.Shape.GetFromCursor(playerCursor)
-    playerPosition := blueprintspatial.Components.Position.GetFromCursor(playerCursor)
-    playerDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(playerCursor)
+    playerShape := spatial.Components.Shape.GetFromCursor(playerCursor)
+    playerPosition := spatial.Components.Position.GetFromCursor(playerCursor)
+    playerDynamics := motion.Components.Dynamics.GetFromCursor(playerCursor)
 
     // Get the platform state
-    platformShape := blueprintspatial.Components.Shape.GetFromCursor(platformCursor)
-    platformPosition := blueprintspatial.Components.Position.GetFromCursor(platformCursor)
-    platformDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(platformCursor)
+    platformShape := spatial.Components.Shape.GetFromCursor(platformCursor)
+    platformPosition := spatial.Components.Position.GetFromCursor(platformCursor)
+    platformDynamics := motion.Components.Dynamics.GetFromCursor(platformCursor)
 
     // Check for collision
     if ok, collisionResult := spatial.Detector.Check(
@@ -1735,9 +1735,9 @@ func (sys PlayerMovementSystem) Run(scene blueprint.Scene, dt float64) error {
     cursor := scene.NewCursor(blueprint.Queries.InputBuffer)
 
     for range cursor.Next() {
-        dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
-        incomingInputs := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
-        direction := blueprintspatial.Components.Direction.GetFromCursor(cursor)
+        dyn := motion.Components.Dynamics.GetFromCursor(cursor)
+        incomingInputs := input.Components.InputBuffer.GetFromCursor(cursor)
+        direction := spatial.Components.Direction.GetFromCursor(cursor)
         isGrounded := components.OnGroundComponent.CheckCursor(cursor)
 
         _, pressedLeft := incomingInputs.ConsumeInput(actions.Left)
@@ -1781,8 +1781,8 @@ package coresystems
 import (
     "platformer/components"
 
-    "github.com/TheBitDrifter/blueprint"
-    "github.com/TheBitDrifter/warehouse"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 type IgnorePlatformClearingSystem struct{}
@@ -1861,14 +1861,14 @@ Finally we can update the `PlayerPlatformCollisionSystem`:
 
 func (s *PlayerPlatformCollisionSystem) resolve(scene blueprint.Scene, platformCursor, playerCursor *warehouse.Cursor) error {
     // Get the player state
-    playerShape := blueprintspatial.Components.Shape.GetFromCursor(playerCursor)
-    playerPosition := blueprintspatial.Components.Position.GetFromCursor(playerCursor)
-    playerDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(playerCursor)
+    playerShape := spatial.Components.Shape.GetFromCursor(playerCursor)
+    playerPosition := spatial.Components.Position.GetFromCursor(playerCursor)
+    playerDynamics := motion.Components.Dynamics.GetFromCursor(playerCursor)
 
     // Get the platform state
-    platformShape := blueprintspatial.Components.Shape.GetFromCursor(platformCursor)
-    platformPosition := blueprintspatial.Components.Position.GetFromCursor(platformCursor)
-    platformDynamics := blueprintmotion.Components.Dynamics.GetFromCursor(platformCursor)
+    platformShape := spatial.Components.Shape.GetFromCursor(platformCursor)
+    platformPosition := spatial.Components.Position.GetFromCursor(platformCursor)
+    platformDynamics := motion.Components.Dynamics.GetFromCursor(platformCursor)
 
     // Check for collision
     if ok, collisionResult := spatial.Detector.Check(
@@ -1997,10 +1997,10 @@ import (
     "platformer/animations"
     "platformer/components"
 
-    "github.com/TheBitDrifter/blueprint"
-    blueprintclient "github.com/TheBitDrifter/blueprint/client"
-    blueprintmotion "github.com/TheBitDrifter/blueprint/motion"
-    "github.com/TheBitDrifter/coldbrew"
+    "github.com/TheBitDrifter/bappa/blueprint"
+    "github.com/TheBitDrifter/bappa/blueprint/client"
+    "github.com/TheBitDrifter/bappa/tteokbokki/motion"
+    "github.com/TheBitDrifter/bappa/coldbrew"
 )
 
 type PlayerAnimationSystem struct{}
@@ -2010,9 +2010,9 @@ func (PlayerAnimationSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene)
 
     for range cursor.Next() {
         // Get state
-        bundle := blueprintclient.Components.SpriteBundle.GetFromCursor(cursor)
+        bundle := client.Components.SpriteBundle.GetFromCursor(cursor)
         spriteBlueprint := &bundle.Blueprints[0]
-        dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
+        dyn := motion.Components.Dynamics.GetFromCursor(cursor)
         grounded, onGround := components.OnGroundComponent.GetFromCursorSafe(cursor)
         if grounded {
             grounded = scene.CurrentTick() == onGround.LastTouch

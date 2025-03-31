@@ -160,7 +160,7 @@ When working with multiple scenes, you need to manage which cameras are assigned
 
 ### Automatic Approach
 
-- Use default `coldbrew` `CameraSceneAssignerSystem` with `blueprintclient`:
+- Use default `coldbrew` `CameraSceneAssignerSystem` with `client`:
 
   ```go
   // Register the built-in camera assigner system
@@ -170,27 +170,27 @@ When working with multiple scenes, you need to manage which cameras are assigned
   func MyScenePlan(height, width int, sto warehouse.Storage) error {
       // Create player archetype with camera component
       playerArchetype, err := sto.NewOrExistingArchetype(
-          blueprintspatial.Components.Position,
-          blueprintclient.Components.SpriteBundle,
-          blueprintspatial.Components.Direction,
-          blueprintinput.Components.InputBuffer,
-          blueprintclient.Components.CameraIndex, // This links entities to cameras
+          spatial.Components.Position,
+          client.Components.SpriteBundle,
+          spatial.Components.Direction,
+          input.Components.InputBuffer,
+          client.Components.CameraIndex, // This links entities to cameras
           // Other components...
       )
 
       // Create player 1 with camera index 0
       err = playerArchetype.Generate(1,
-          blueprintspatial.NewPosition(180, 180),
-          blueprintclient.CameraIndex(0), // This entity will be followed by camera 0
-          blueprintinput.InputBuffer{ReceiverIndex: 0}, // First player input
+          spatial.NewPosition(180, 180),
+          client.CameraIndex(0), // This entity will be followed by camera 0
+          input.InputBuffer{ReceiverIndex: 0}, // First player input
           // Other component values...
       )
 
       // Create player 2 with camera index 1 (for split-screen)
       err = playerArchetype.Generate(1,
-          blueprintspatial.NewPosition(540, 180),
-          blueprintclient.CameraIndex(1), // This entity will be followed by camera 1
-          blueprintinput.InputBuffer{ReceiverIndex: 1}, // Second player input
+          spatial.NewPosition(540, 180),
+          client.CameraIndex(1), // This entity will be followed by camera 1
+          input.InputBuffer{ReceiverIndex: 1}, // Second player input
           // Other component values...
       )
 

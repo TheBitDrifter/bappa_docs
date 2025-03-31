@@ -19,8 +19,8 @@ A query is a filter that selects entities based on their components. Queries use
 ```go
 // Create a query for entities with both Position and Sprite components
 query := warehouse.Factory.NewQuery().And(
-    blueprintspatial.Components.Position,
-    blueprintclient.Components.SpriteBundle,
+    spatial.Components.Position,
+    client.Components.SpriteBundle,
 )
 ```
 
@@ -37,8 +37,8 @@ cursor := scene.NewCursor(query)
 // Iterate through matching entities
 for range cursor.Next() {
     // Access components from the current entity
-    position := blueprintspatial.Components.Position.GetFromCursor(cursor)
-    spriteBundle := blueprintclient.Components.SpriteBundle.GetFromCursor(cursor)
+    position := spatial.Components.Position.GetFromCursor(cursor)
+    spriteBundle := client.Components.SpriteBundle.GetFromCursor(cursor)
 
     // Process the entity...
 }
@@ -57,9 +57,9 @@ Matches entities that have ALL specified components:
 ```go
 // Entities with Position, SpriteBundle, AND InputBuffer
 query := warehouse.Factory.NewQuery().And(
-    blueprintspatial.Components.Position,
-    blueprintclient.Components.SpriteBundle,
-    blueprintinput.Components.InputBuffer,
+    spatial.Components.Position,
+    client.Components.SpriteBundle,
+    input.Components.InputBuffer,
 )
 ```
 
@@ -82,7 +82,7 @@ Matches entities that DO NOT have the specified components:
 ```go
 // Entities with Position but NOT InvisibleTag
 query := warehouse.Factory.NewQuery().And(
-    blueprintspatial.Components.Position,
+    spatial.Components.Position,
     warehouse.Factory.NewQuery().Not(components.InvisibleTag),
 )
 ```
@@ -96,7 +96,7 @@ You can create powerful filters by nesting query operators:
 // that are EITHER on the ground OR jumping
 // but NOT disabled
 query := warehouse.Factory.NewQuery().And(
-    blueprintinput.Components.InputBuffer,
+    input.Components.InputBuffer,
     warehouse.Factory.NewQuery().Or(
         components.GroundedTag,
         components.JumpingTag,
@@ -118,17 +118,17 @@ var Queries = struct {
     Interactables   warehouse.QueryNode
 }{
     MovableEntities: warehouse.Factory.NewQuery().And(
-        blueprintspatial.Components.Position,
-        blueprintmotion.Components.Dynamics,
+        spatial.Components.Position,
+        motion.Components.Dynamics,
     ),
     Enemies: warehouse.Factory.NewQuery().And(
         components.EnemyTag,
-        blueprintspatial.Components.Position,
+        spatial.Components.Position,
     ),
     Interactables: warehouse.Factory.NewQuery().And(
         components.InteractableTag,
-        blueprintspatial.Components.Position,
-        blueprintspatial.Components.Shape,
+        spatial.Components.Position,
+        spatial.Components.Shape,
     ),
 }
 ```

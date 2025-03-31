@@ -67,14 +67,14 @@ import (
  "embed"
  "log"
 
- blueprintldtk "github.com/TheBitDrifter/blueprint/ldtk"
+ "github.com/TheBitDrifter/bappa/blueprint/ldtk"
 )
 
 //go:embed data.ldtk
 var data embed.FS
 
-var DATA = func() *blueprintldtk.LDtkProject {
- project, err := blueprintldtk.Parse(data, "./ldtk/data.ldtk")
+var DATA = func() *ldtk.LDtkProject {
+ project, err := ldtk.Parse(data, "./ldtk/data.ldtk")
  if err != nil {
   log.Fatal(err)
  }
@@ -94,7 +94,7 @@ Create a scene plan that loads your LDTK level:
 package scenes
 
 import (
- "github.com/TheBitDrifter/yourgame/ldtk"
+ "github.com/TheBitDrifter/yourgame/package_where_ldtk_data_is_stored"
  "github.com/TheBitDrifter/warehouse"
 )
 
@@ -103,13 +103,13 @@ const SCENE_ONE_NAME = "Scene1"
 var SceneOne = Scene{
  Name:   SCENE_ONE_NAME,
  Plan:   sceneOnePlan,
- Width:  ldtk.DATA.WidthFor(SCENE_ONE_NAME),
- Height: ldtk.DATA.HeightFor(SCENE_ONE_NAME),
+ Width:  package_where_ldtk_data_is_stored.DATA.WidthFor(SCENE_ONE_NAME),
+ Height: package_where_ldtk_data_is_stored.DATA.HeightFor(SCENE_ONE_NAME),
 }
 
 func sceneOnePlan(height, width int, sto warehouse.Storage) error {
  // Load the image tiles
- err := ldtk.DATA.LoadTiles(SCENE_ONE_NAME, sto)
+ err := package_where_ldtk_data_is_stored.DATA.LoadTiles(SCENE_ONE_NAME, sto)
  if err != nil {
   return err
  }
@@ -119,13 +119,13 @@ func sceneOnePlan(height, width int, sto warehouse.Storage) error {
  platArchetype, _ := sto.NewOrExistingArchetype(PlatformComposition...)
  transferArchetype, _ := sto.NewOrExistingArchetype(CollisionPlayerTransferComposition...)
 
- err = ldtk.DATA.LoadIntGrid(SCENE_ONE_NAME, sto, blockArchetype, platArchetype, transferArchetype)
+ err = package_where_ldtk_data_is_stored.DATA.LoadIntGrid(SCENE_ONE_NAME, sto, blockArchetype, platArchetype, transferArchetype)
  if err != nil {
   return err
  }
 
  // Load custom LDTK entities
- err = ldtk.DATA.LoadEntities(SCENE_ONE_NAME, sto, entityRegistry)
+ err = package_where_ldtk_data_is_stored.DATA.LoadEntities(SCENE_ONE_NAME, sto, entityRegistry)
  if err != nil {
   return err
  }
@@ -149,7 +149,7 @@ Tile layers are loaded as visual elements. Each tile layer becomes a single enti
 
 ```go
 // In your scene plan:
-err := ldtk.DATA.LoadTiles(SCENE_NAME, sto)
+err := package_where_ldtk_data_is_stored.DATA.LoadTiles(SCENE_NAME, sto)
 if err != nil {
  return err
 }
@@ -167,7 +167,7 @@ platformArchetype, _ := sto.NewOrExistingArchetype(PlatformComposition...)
 // ... other archetypes
 
 // Then load the int grid, passing archetypes in order of int grid values (1, 2, 3, etc.)
-err = ldtk.DATA.LoadIntGrid(SCENE_NAME, sto, blockArchetype, platformArchetype)
+err = package_where_ldtk_data_is_stored.DATA.LoadIntGrid(SCENE_NAME, sto, blockArchetype, platformArchetype)
 ```
 
 ### Entity Layers
@@ -176,7 +176,7 @@ Entity layers are loaded using the entity handlers you registered with the `enti
 
 ```go
 // In your scene plan:
-err = ldtk.DATA.LoadEntities(SCENE_NAME, sto, entityRegistry)
+err = package_where_ldtk_data_is_stored.DATA.LoadEntities(SCENE_NAME, sto, entityRegistry)
 ```
 
 ### Working Custom LDTK Entities
@@ -190,7 +190,7 @@ import (
  "github.com/TheBitDrifter/blueprint"
  "github.com/TheBitDrifter/warehouse"
 
- blueprintldtk "github.com/TheBitDrifter/blueprint/ldtk"
+ "github.com/TheBitDrifter/blueprint/ldtk"
 )
 
 var entityRegistry = blueprintldtk.NewLDtkEntityRegistry()
@@ -198,13 +198,13 @@ var entityRegistry = blueprintldtk.NewLDtkEntityRegistry()
 // Registering custom LDTK entities
 func init() {
  // Player start position handler
- entityRegistry.Register("PlayerStart", func(entity *blueprintldtk.LDtkEntityInstance, sto warehouse.Storage) error {
+ entityRegistry.Register("PlayerStart", func(entity *ldtk.LDtkEntityInstance, sto warehouse.Storage) error {
   // Create player at the position defined in LDtk
   return NewPlayer(float64(entity.Position[0]), float64(entity.Position[1]), sto)
  })
 
  // Scene transition trigger handler
- entityRegistry.Register("SceneTransfer", func(entity *blueprintldtk.LDtkEntityInstance, sto warehouse.Storage) error {
+ entityRegistry.Register("SceneTransfer", func(entity *ldtk.LDtkEntityInstance, sto warehouse.Storage) error {
   // Extract properties from LDtk entity
   targetScene := entity.StringFieldOr("targetScene", "Scene2") // Default if not specified
   targetX := entity.FloatFieldOr("targetX", 20.0)
@@ -232,7 +232,7 @@ func init() {
 LDTK allows you to define custom properties for your entities. Access these properties in your entity handlers:
 
 ```go
-entityRegistry.Register("Enemy", func(entity *blueprintldtk.LDtkEntityInstance, sto warehouse.Storage) error {
+entityRegistry.Register("Enemy", func(entity *ldtk.LDtkEntityInstance, sto warehouse.Storage) error {
  // Get entity properties
  enemyType := entity.StringFieldOr("type", "basic")
  health := entity.IntFieldOr("health", 100)

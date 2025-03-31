@@ -11,5 +11,5 @@ toc: true
 {{< wasm-demo src="physics/angular.html" width="640px" height="360" autoplay="true" >}}
 
 ```go
-https://github.com/TheBitDrifter/coldbrew/tree/main/examples/physicangular
+https://github.com/TheBitDrifter/bappa/blob/main/coldbrew/examples/physicangular/angular.go
 ```

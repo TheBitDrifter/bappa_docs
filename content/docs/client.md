@@ -23,7 +23,7 @@ import (
  "embed"
  "log"
 
- "github.com/TheBitDrifter/coldbrew"
+ "github.com/TheBitDrifter/bappa/coldbrew"
 )
 
 //go:embed assets/*

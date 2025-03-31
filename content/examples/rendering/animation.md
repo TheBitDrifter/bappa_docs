@@ -16,18 +16,18 @@ import (
  "embed"
  "log"
 
- "github.com/TheBitDrifter/blueprint"
- blueprintclient "github.com/TheBitDrifter/blueprint/client"
- blueprintspatial "github.com/TheBitDrifter/blueprint/spatial"
- "github.com/TheBitDrifter/coldbrew"
- coldbrew_rendersystems "github.com/TheBitDrifter/coldbrew/rendersystems"
- "github.com/TheBitDrifter/warehouse"
+ "github.com/TheBitDrifter/bappa/blueprint"
+ "github.com/TheBitDrifter/bappa/blueprint/client"
+ "github.com/TheBitDrifter/bappa/coldbrew"
+ "github.com/TheBitDrifter/bappa/coldbrew/coldbrew_rendersystems"
+ "github.com/TheBitDrifter/bappa/tteokbokki/spatial"
+ "github.com/TheBitDrifter/bappa/warehouse"
 )
 
 //go:embed assets/*
 var assets embed.FS
 
-var idleAnimation = blueprintclient.AnimationData{
+var idleAnimation = client.AnimationData{
  Name:        "idle",
  RowIndex:    0,
  FrameCount:  6,
@@ -72,15 +72,15 @@ func main() {
 
 func exampleScenePlan(height, width int, sto warehouse.Storage) error {
  spriteArchetype, err := sto.NewOrExistingArchetype(
-  blueprintspatial.Components.Position,
-  blueprintclient.Components.SpriteBundle,
+  spatial.Components.Position,
+  client.Components.SpriteBundle,
  )
  if err != nil {
   return err
  }
  err = spriteArchetype.Generate(1,
-  blueprintspatial.NewPosition(90, 20),
-  blueprintclient.NewSpriteBundle().
+  spatial.NewPosition(90, 20),
+  client.NewSpriteBundle().
    AddSprite("sprite_sheet.png", true).
    WithAnimations(idleAnimation),
  )

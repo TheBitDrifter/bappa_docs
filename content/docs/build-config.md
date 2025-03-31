@@ -32,7 +32,7 @@ The `unsafe` build tag has significant effects across the Bappa ecosystem:
 cursor := scene.NewCursor(query)
 for cursor.Next() {
     // Component access is faster in unsafe mode
-    position := blueprintspatial.Components.Position.GetFromCursor(cursor)
+    position := spatial.Components.Position.GetFromCursor(cursor)
     // ...
 }
 ```
