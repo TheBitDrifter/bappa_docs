@@ -55,9 +55,9 @@ defaultContentLanguageInSubdir = false
   category = "categories"
   tag = "tags"
 
-[permalinks]
-  blog = "/blog/:slug/"
-  docs = "/docs/:sections[1:]/:slug/"
+# [permalinks]
+#blog = "/blog/:slug/"
+#docs = "/docs/:sections[1:]/:slug/"
 # docs = "/docs/1.0/:sections[1:]/:slug/"
 
 [minify.tdewolff.html]

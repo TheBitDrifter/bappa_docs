@@ -28,11 +28,11 @@ This layered approach separates the concerns of input detection, mapping, and pr
 In Bappa, inputs are captured by the client and transformed into game actions in two main stages:
 
 1. **Input Capture**: The client detects raw inputs (keyboard presses, mouse clicks, gamepad buttons)
-2. **Input Processing**: These raw inputs are transformed into game actions via an input buffer system
+2. **Input Processing**: These raw inputs are transformed into game actions via an action buffer system
 
 ## Setting Up Input Receivers
 
-The first step in handling input is to create and configure one or more input receivers. Each receiver represents a separate input source, typically corresponding to a player.
+The first step in handling input is to create and configure one or more receivers. Each receiver represents a separate input source, typically corresponding to a player.
 
 ```go
 // Get an input receiver for a player
@@ -45,11 +45,11 @@ if err != nil {
 var actions = struct {
     Jump, MoveLeft, MoveRight, Attack, Interact input.Input
 }{
-    Jump:      input.NewInput("jump"),
-    MoveLeft:  input.NewInput("move_left"),
-    MoveRight: input.NewInput("move_right"),
-    Attack:    input.NewInput("attack"),
-    Interact:  input.NewInput("interact"),
+    Jump:      input.NewAction("jump"),
+    MoveLeft:  input.NewAction("move_left"),
+    MoveRight: input.NewAction("move_right"),
+    Attack:    input.NewAction("attack"),
+    Interact:  input.NewAction("interact"),
 }
 
 // Map keyboard keys to game actions
@@ -101,8 +101,8 @@ receiver.RegisterTouch(actions.Movement) // Action will have x/y values of tap
 
 **Important principle**: Core systems should never directly access input devices. Instead:
 
-- **Client systems** capture raw inputs and populate InputBuffers
-- **Core systems** read from InputBuffers to determine game actions
+- **Client systems** capture raw inputs and populate ActionBuffers
+- **Core systems** read from ActionBuffers to determine game actions
 
 This separation has significant benefits:
 
@@ -113,7 +113,7 @@ This separation has significant benefits:
 
 ## The Input Buffer
 
-The `InputBuffer` component is the bridge between client inputs and core game logic. It:
+The `ActionBuffer` component is the bridge between client inputs and core game logic. It:
 
 - Stores inputs that are relevant to an entity
 - Automatically deduplicates inputs
@@ -121,23 +121,23 @@ The `InputBuffer` component is the bridge between client inputs and core game lo
 
 ## Processing Inputs
 
-Bappa's built-in `InputBufferSystem` automatically collects inputs from all receivers and distributes them to the appropriate entity input buffers. While convenient, this system is entirely optional - you can register it with your client like this:
+Bappa's built-in `ActionBufferSystem` automatically collects inputs from all receivers and distributes them to the appropriate entity input buffers. While convenient, this system is entirely optional - you can register it with your client like this:
 
 ```go
 // Register the input buffer system
-client.RegisterGlobalClientSystem(&clientsystems.InputBufferSystem{})
+client.RegisterGlobalClientSystem(&clientsystems.ActionBufferSystem{})
 ```
 
 ## Connecting Inputs to Entities
 
-To make entities respond to inputs, you need to add the `InputBuffer` component to them:
+To make entities respond to inputs, you need to add the `ActionBuffer` component to them:
 
 ```go
 // Create a player entity with an input buffer component
 playerArchetype, err := sto.NewOrExistingArchetype(
     spatial.Components.Position,
     client.Components.SpriteBundle,
-    input.Components.InputBuffer,  // Input buffer component
+    input.Components.ActionBuffer,  // Input buffer component
     // Other components...
 )
 
@@ -145,7 +145,7 @@ playerArchetype, err := sto.NewOrExistingArchetype(
 err = playerArchetype.Generate(1,
     spatial.NewPosition(180, 180),
     // Other component values...
-    input.InputBuffer{ReceiverIndex: 0},  // Connect to receiver 0
+    input.ActionBuffer{ReceiverIndex: 0},  // Connect to receiver 0
 )
 ```
 
@@ -153,29 +153,29 @@ The `ReceiverIndex` value links the entity to a specific input receiver, allowin
 
 ## Reading Inputs in Core Systems
 
-Core systems should read from `InputBuffer` components rather than directly accessing input devices. Here's a simple example:
+Core systems should read from `ActionBuffer` components rather than directly accessing input devices. Here's a simple example:
 
 ```go
 // MovementSystem processes movement inputs
 type MovementSystem struct{}
 
 func (sys MovementSystem) Run(scene blueprint.Scene, dt float64) error {
-    // Query for entities with both InputBuffer and Position components
-    cursor := scene.NewCursor(blueprint.Queries.InputBuffer)
+    // Query for entities with both ActionBuffer and Position components
+    cursor := scene.NewCursor(blueprint.Queries.ActionBuffer)
 
     for range cursor.Next() {
         // Get the input buffer component
-        inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
+        actionBuffer := input.Components.ActionBuffer.GetFromCursor(cursor)
         position := spatial.Components.Position.GetFromCursor(cursor)
 
         // Check for "Move Right" input
-        if _, hasMoveRight := inputBuffer.ConsumeInput(actions.MoveRight); hasMoveRight {
+        if _, hasMoveRight := actionBuffer.ConsumeInput(actions.MoveRight); hasMoveRight {
             // Do something with the input
             position.X += 5 // Move the entity right
         }
 
         // Check for "Move Left" input
-        if _, hasMoveLeft := inputBuffer.ConsumeInput(actions.MoveLeft); hasMoveLeft {
+        if _, hasMoveLeft := actionBuffer.ConsumeInput(actions.MoveLeft); hasMoveLeft {
             // Do something with the input
             position.X -= 5 // Move the entity left
         }
@@ -189,7 +189,7 @@ This system simply checks for movement inputs and updates entity positions accor
 
 ## Freedom in Client Systems
 
-While core systems should only read from InputBuffers, client systems have no such restriction! When writing client systems, you're free to:
+While core systems should only read from ActionBuffers, client systems have no such restriction! When writing client systems, you're free to:
 
 - Read inputs directly from receivers
 - Check keyboard, mouse, or gamepad state directly with Ebiten functions
@@ -211,10 +211,10 @@ func (YourClientSystem) Run(cli coldbrew.Client, scene coldbrew.Scene) error {
 
 ### Custom Input Processing
 
-Developers can choose to implement their own input handling approach if they prefer. You can create custom client systems that directly access the receivers and handle inputs without using the `InputBuffer` component:
+Developers can choose to implement their own input handling approach if they prefer. You can create custom client systems that directly access the receivers and handle inputs without using the `ActionBuffer` component:
 
 ```go
-// Custom input system that bypasses the standard InputBuffer
+// Custom input system that bypasses the standard ActionBuffer
 type DirectInputSystem struct{}
 
 func (sys DirectInputSystem) Run(cli coldbrew.Client) error {
@@ -244,7 +244,7 @@ For position-based inputs (mouse, touch, or analog sticks), Bappa provides both 
 - **Global Coordinates**: `X` and `Y` fields contain raw screen coordinates or analog movement vector
 - **Local Coordinates**: `LocalX` and `LocalY` fields contain coordinates relative to the entity's camera (does not apply to analog)
 
-The `InputBufferSystem` automatically translates global coordinates to local ones if the entity has a `CameraIndex` component, making it easier to work with screen-relative positions.
+The `ActionBufferSystem` automatically translates global coordinates to local ones if the entity has a `CameraIndex` component, making it easier to work with screen-relative positions.
 
 ### Balancing Separation of Concerns
 
@@ -264,10 +264,10 @@ For a cleaner separation, consider using client systems as translators that conv
 type ExampleInputSystem struct{}
 
 func (ExampleInputSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene) error {
- cursor := scene.NewCursor(blueprint.Queries.InputBuffer)
+ cursor := scene.NewCursor(blueprint.Queries.ActionBuffer)
 
  for range cursor.Next() {
-  buffer := input.Components.InputBuffer.GetFromCursor(cursor)
+  buffer := input.Components.ActionBuffer.GetFromCursor(cursor)
 
   // Extract the input that knows too much (while in a client system)
   if stickMovement, ok := buffer.ConsumeInput(actions.StickMovement); ok {
@@ -313,41 +313,24 @@ receiver2.RegisterGamepadButton(ebiten.GamepadButton0, actions.Jump)
 // Player 1
 player1Arch.Generate(1,
     // Other components...
-    input.InputBuffer{ReceiverIndex: 0},
+    input.ActionBuffer{ReceiverIndex: 0},
 )
 
 // Player 2
 player2Arch.Generate(1,
     // Other components...
-    input.InputBuffer{ReceiverIndex: 1},
+    input.ActionBuffer{ReceiverIndex: 1},
 )
 ```
 
 This setup gives each player their own set of controls and connects each player entity to its corresponding input receiver.
 
-## Dynamic Input Remapping
-
-Bappa makes it easy to implement input remapping for player preferences:
-
-```go
-// Function to update keyboard mappings
-func RemapKey(receiver coldbrew.Receiver, oldKey, newKey ebiten.Key, action input.Input) {
-    // Unregister by registering a no-op action
-    receiver.RegisterKey(oldKey, input.NewInput("none"))
-
-    // Register the new key
-    receiver.RegisterKey(newKey, action)
-}
-
-// Similar functions can be created for other input types
-```
-
 ## Best Practices
 
 1. **Separation of Concerns**: Keep input detection (in receivers) separate from input processing (in systems)
-2. **Clear Input Names**: Use descriptive names for your game inputs (e.g., "jump" instead of "action1")
+2. **Clear Action Names**: Use descriptive names for your game inputs (e.g., "jump" instead of "action1")
 3. **Multiple Input Methods**: Support keyboard, gamepad, and touch when appropriate for better accessibility
-4. **Consider Custom Solutions**: Remember that the InputBuffer system is optional - don't hesitate to build your own input processing approach if it better suits your game's needs
+4. **Consider Custom Solutions**: Remember that the ActionBuffer system is optional - don't hesitate to build your own input processing approach if it better suits your game's needs
 
 ## Conclusion
 

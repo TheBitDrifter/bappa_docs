@@ -83,13 +83,13 @@ These systems can be registered to run either before or after Core Systems:
 
 ```go
 // Run before core simulation
-client.RegisterGlobalClientSystem(clientsystems.InputBufferSystem{})
+client.RegisterGlobalClientSystem(clientsystems.ActionBufferSystem{})
 
 ```
 
 Common built-in Global Client Systems include:
 
-- **InputBufferSystem**: Processes raw inputs and forwards them to entities
+- **ActionBufferSystem**: Processes raw inputs and forwards them to entities
 - **CameraSceneAssignerSystem**: Manages camera assignments across scenes
 
 ### Core Systems
@@ -272,17 +272,17 @@ type JumpSoundSystem struct{}
 
 // Run processes the system logic
 func (sys JumpSoundSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene) error {
-    // Create a cursor that queries for entities with both InputBuffer and SoundBundle
+    // Create a cursor that queries for entities with both ActionBuffer and SoundBundle
     cursor := scene.NewCursor(blueprint.Queries.InputSoundBundle)
 
     // Process each matching entity
     for range cursor.Next() {
         // Get the components we need
-        inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
+        actionBuffer := input.Components.ActionBuffer.GetFromCursor(cursor)
         soundBundle := client.Components.SoundBundle.GetFromCursor(cursor)
 
         // Process all inputs in the buffer
-        for _, input := range inputBuffer.Inputs {
+        for _, input := range actionBuffer.Inputs {
             // Check if this is a jump input
             if input.Val == MyGameInputs.Jump {
                 // Find the jump sound in the bundle
@@ -393,7 +393,7 @@ Bappa provides several built-in systems that handle common game functionality:
 ### Global Systems
 
 - **GlobalRenderer**: Renders sprites, animations, and backgrounds
-- **InputBufferSystem**: Processes raw inputs and forwards them to entities
+- **ActionBufferSystem**: Processes raw inputs and forwards them to entities
 - **CameraSceneAssignerSystem**: Manages camera assignments across scenes
 - **SplitScreenLayoutSystem**: Arranges cameras for split-screen gameplay
 - **IntegrationSystem**: Applies forces to entities with physics/dynamics

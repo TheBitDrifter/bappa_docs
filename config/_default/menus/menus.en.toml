@@ -43,10 +43,10 @@
    name = "API"
    url = "/API/"
    weight = 150
-[[main]]
-   name = "Blog"
-   url = "/blog/"
-   weight = 200
+# [[main]]
+#  name = "Blog"
+#  url = "/blog/"
+# weight = 200
 
 # [[social]]
 #   name = "X"

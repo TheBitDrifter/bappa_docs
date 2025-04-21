@@ -55,11 +55,11 @@ Bappa supports three logical operators for building complex queries:
 Matches entities that have ALL specified components:
 
 ```go
-// Entities with Position, SpriteBundle, AND InputBuffer
+// Entities with Position, SpriteBundle, AND ActionBuffer
 query := warehouse.Factory.NewQuery().And(
     spatial.Components.Position,
     client.Components.SpriteBundle,
-    input.Components.InputBuffer,
+    input.Components.ActionBuffer,
 )
 ```
 
@@ -92,11 +92,11 @@ query := warehouse.Factory.NewQuery().And(
 You can create powerful filters by nesting query operators:
 
 ```go
-// Find player-controlled entities (have InputBuffer)
+// Find player-controlled entities (have ActionBuffer)
 // that are EITHER on the ground OR jumping
 // but NOT disabled
 query := warehouse.Factory.NewQuery().And(
-    input.Components.InputBuffer,
+    input.Components.ActionBuffer,
     warehouse.Factory.NewQuery().Or(
         components.GroundedTag,
         components.JumpingTag,

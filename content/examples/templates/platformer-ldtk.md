@@ -10,10 +10,10 @@ toc: false
 
 {{< callout context="note" title="Instructions" icon="outline/info-circle" >}}
 
-- Click on demo to allow inputs
-- Press 0 to toggle(turn off) debugger view
-- WASD controls player
-- There is two scenes
+- Click the demo window to activate controls
+- Press 0 to toggle the debugger view (show/hide)
+- Use WASD to control the player
+- There are two scenes included
   {{< /callout >}}
 
 {{< wasm-demo src="templates/platformer_ldtk.html" width="640px" height=719"" autoplay="true" >}}

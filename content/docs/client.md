@@ -104,7 +104,7 @@ You register these systems with the client to create your game's behavior:
 client.RegisterGlobalRenderSystem(&rendersystems.GlobalRenderer{})
 
 // Register systems that run before core simulation
-client.RegisterGlobalClientSystem(&clientsystems.InputBufferSystem{})
+client.RegisterGlobalClientSystem(&clientsystems.ActionBufferSystem{})
 ```
 
 ## Cameras and Viewports

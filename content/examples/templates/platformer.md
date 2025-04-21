@@ -10,10 +10,10 @@ toc: false
 
 {{< callout context="note" title="Instructions" icon="outline/info-circle" >}}
 
-- Click on demo to allow inputs
+- Click the demo window to activate controls
 - Press 0 to toggle (turn off) debugger view
-- WASD controls player
-- There is two scenes
+- Use WASD to control the player
+- There are two scenes included
 
 {{< /callout >}}
 

@@ -80,6 +80,38 @@ As long as the active scene(s) doesn't exceed the maximum cache sizes specified,
 
 Ideally, your cache sizing should exceed several times the average volume of assets required for all concurrently running scenes.
 
+### Asset Preloading
+
+When entities are created dynamically during gameplay, Bappa needs to have their assets already loaded to prevent hitching or delays. You can preload assets when registering a scene:
+
+```go
+// Create a preload blueprint for assets needed by dynamically created entities
+preloadedAssets := client.NewPreLoadBlueprint().
+    AddSprite("characters/enemy.png").
+    AddSound(sounds.EnemySpawn).
+    AddSound(sounds.EnemyDeath)
+
+// Register the scene with preloaded assets
+err := client.RegisterScene(
+    "GameScene",
+    width, height,
+    sceneSetupFunction,
+    renderSystems,
+    clientSystems,
+    coreSystems,
+    *preloadedAssets,  // Pass the preload bundle as the last parameter
+)
+```
+
+Preloaded assets are loaded when the scene starts loading, ensuring they're available immediately when needed, even if the corresponding entities don't exist at scene start. This is particularly useful for:
+
+- Enemies that spawn during gameplay
+- Collectibles or power-ups that appear at intervals
+- Projectiles or effects that are created in response to player actions
+- Any entity created through script events or timers
+
+The preload system supports both sprites and sounds, with the same configuration options available as when creating bundles directly.
+
 ## Working with Sprites
 
 ### Sprite Bundles
@@ -225,7 +257,7 @@ import (
 type PlayerAnimationSystem struct{}
 
 func (PlayerAnimationSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene) error {
-    cursor := scene.NewCursor(blueprint.Queries.InputBuffer)
+    cursor := scene.NewCursor(blueprint.Queries.ActionBuffer)
 
     for range cursor.Next() {
         // Get sprite bundle and first blueprint (main character sprite)
@@ -334,10 +366,10 @@ func (sys PlayerSoundSystem) Run(cli coldbrew.LocalClient, scene coldbrew.Scene)
 
     for range cursor.Next() {
         soundBundle := client.Components.SoundBundle.GetFromCursor(cursor)
-        inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
+        actionBuffer := input.Components.ActionBuffer.GetFromCursor(cursor)
 
         // Check for jump input
-        for _, input := range inputBuffer.Inputs {
+        for _, input := range actionBuffer.Inputs {
             if input.Val == MyGameInputs.Jump {
                 // Find and play the jump sound
                 jumpSound, err := coldbrew.MaterializeSound(*soundBundle, sounds.Jump)

@@ -167,13 +167,13 @@ When working with multiple scenes, you need to manage which cameras are assigned
   client.RegisterGlobalClientSystem(&clientsystems.CameraSceneAssignerSystem{})
 
   // In your scene Blueprint Plan, create entities with CameraIndex components
-  func MyScenePlan(height, width int, sto warehouse.Storage) error {
+  func MyScenePlan(width, height int, sto warehouse.Storage) error {
       // Create player archetype with camera component
       playerArchetype, err := sto.NewOrExistingArchetype(
           spatial.Components.Position,
           client.Components.SpriteBundle,
           spatial.Components.Direction,
-          input.Components.InputBuffer,
+          input.Components.ActionBuffer,
           client.Components.CameraIndex, // This links entities to cameras
           // Other components...
       )
@@ -182,7 +182,7 @@ When working with multiple scenes, you need to manage which cameras are assigned
       err = playerArchetype.Generate(1,
           spatial.NewPosition(180, 180),
           client.CameraIndex(0), // This entity will be followed by camera 0
-          input.InputBuffer{ReceiverIndex: 0}, // First player input
+          input.ActionBuffer{ReceiverIndex: 0}, // First player input
           // Other component values...
       )
 
@@ -190,7 +190,7 @@ When working with multiple scenes, you need to manage which cameras are assigned
       err = playerArchetype.Generate(1,
           spatial.NewPosition(540, 180),
           client.CameraIndex(1), // This entity will be followed by camera 1
-          input.InputBuffer{ReceiverIndex: 1}, // Second player input
+          input.ActionBuffer{ReceiverIndex: 1}, // Second player input
           // Other component values...
       )
 

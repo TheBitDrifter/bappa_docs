@@ -10,11 +10,11 @@ toc: false
 
 {{< callout context="note" title="Instructions" icon="outline/info-circle" >}}
 
-- Click on demo to allow inputs
+- Click the demo window to activate controls
 - Press 0 to toggle (turn off) debugger view
-- WASD controls player one
+- Use WASD or Arrow Keys to move the players.
 - Arrow Keys controls player two
-- There is two scenes
+- There are two scenes included
 
 {{< /callout >}}
 

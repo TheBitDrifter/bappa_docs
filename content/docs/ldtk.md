@@ -107,7 +107,7 @@ var SceneOne = Scene{
  Height: package_where_ldtk_data_is_stored.DATA.HeightFor(SCENE_ONE_NAME),
 }
 
-func sceneOnePlan(height, width int, sto warehouse.Storage) error {
+func sceneOnePlan(width, height int, sto warehouse.Storage) error {
  // Load the image tiles
  err := package_where_ldtk_data_is_stored.DATA.LoadTiles(SCENE_ONE_NAME, sto)
  if err != nil {

@@ -6,7 +6,7 @@ date: 2025-03-15T10:00:00+02:00
 lastmod: 2025-03-15T10:00:00+02:00
 draft: false
 images: []
-weight: 960
+weight: 1000
 ---
 
 The Bappa Framework is an open-source project, and contributions are welcome! Whether you've found a bug, have a feature request, or want to improve documentation, the best way to contribute is through GitHub.

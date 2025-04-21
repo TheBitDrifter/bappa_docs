@@ -101,6 +101,7 @@ Bappa offers several pre-built templates to jumpstart your game development:
 | `platformer-split`      | A platformer game with split-screen co-op support   |
 | `platformer-ldtk`       | A platformer using LDtk level editor integration    |
 | `platformer-split-ldtk` | A platformer with split-screen and LDtk integration |
+| `platformer-netcode`    | A platformer with netcode and LDtk integration      |
 | `sandbox`               | An open sandbox game environment                    |
 
 ### Template Features
@@ -111,6 +112,7 @@ Each template comes with different features and setups:
 - **Platformer Template**: Includes player movement, physics, collision detection, one-way platforms, and slope support
 - **LDtk Platformer Templates**: Include integration with the [LDtk level editor](https://ldtk.io/) for easy level design and importing
 - **Split-Screen Templates**: Add multiplayer functionality with split-screen support for two or more players
+- **Netcode Templates**: Add multiplayer functionality with netcode support for many players
 - **Sandbox Template**: Provides an minimal environment for maximum creative freedom
 
 All templates come with well-commented code to help you understand how the Bappa game engine works!

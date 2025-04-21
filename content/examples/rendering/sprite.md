@@ -62,7 +62,7 @@ func main() {
  }
 }
 
-func exampleScenePlan(height, width int, sto warehouse.Storage) error {
+func exampleScenePlan(width, height int, sto warehouse.Storage) error {
  spriteArchetype, err := sto.NewOrExistingArchetype(
   spatial.Components.Position,
   client.Components.SpriteBundle,
@@ -74,15 +74,11 @@ func exampleScenePlan(height, width int, sto warehouse.Storage) error {
  err = spriteArchetype.Generate(1,
   spatial.NewPosition(255, 20),
   client.NewSpriteBundle().
-   AddSprite("sprite.png", true),
+   AddSprite("images/sprite.png", true),
  )
  if err != nil {
   return err
  }
  return nil
 }
-```
-
-```
-
 ```

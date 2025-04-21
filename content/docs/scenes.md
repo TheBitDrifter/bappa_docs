@@ -17,12 +17,12 @@ In Bappa, a Blueprint Plan serves as the foundation for scene creation. Plans ar
 A Blueprint Plan is a Go function with this signature:
 
 ```go
-type Plan func(height, width int, storage warehouse.Storage) error
+type Plan func(width, height int, storage warehouse.Storage) error
 ```
 
 This function receives:
 
-- `height` and `width`: The dimensions of the scene
+- `width` and `height`: The dimensions of the scene
 - `storage`: The ECS storage where all entities and components will be stored
 
 The plan's job is to:
@@ -40,13 +40,13 @@ If you need to load state from external files, the plan function is the ideal pl
 Here's a simple pseudo example of a Blueprint Plan that creates a basic platformer level:
 
 ```go
-func SimplePlatformerLevel(height, width int, sto warehouse.Storage) error {
+func SimplePlatformerLevel(width, height int, sto warehouse.Storage) error {
     // Create player archetype
     playerArchetype, err := sto.NewOrExistingArchetype(
         spatial.Components.Position,
         client.Components.SpriteBundle,
         spatial.Components.Direction,
-        input.Components.InputBuffer,
+        input.Components.ActionBuffer,
         client.Components.CameraIndex,
         spatial.Components.Shape,
         motion.Components.Dynamics,
@@ -61,7 +61,7 @@ func SimplePlatformerLevel(height, width int, sto warehouse.Storage) error {
         spatial.NewRectangle(18, 58),
         motion.NewDynamics(10),
         spatial.NewDirectionRight(),
-        input.InputBuffer{ReceiverIndex: 0},
+        input.ActionBuffer{ReceiverIndex: 0},
         client.CameraIndex(0),
         client.NewSpriteBundle().
             AddSprite("characters/player.png", true).
@@ -175,7 +175,7 @@ As scenes become more complex, organizing your Blueprint Plans becomes essential
 Break down your plan into smaller, focused functions that handle specific parts of the scene:
 
 ```go
-func GameLevel(height, width int, sto warehouse.Storage) error {
+func GameLevel(width, height int, sto warehouse.Storage) error {
     // Create main player
     if err := createPlayer(sto); err != nil {
         return err
@@ -261,7 +261,7 @@ var PlayerComposition = []warehouse.Component{
  spatial.Components.Position,
  motion.Components.Dynamics,
  client.Components.SpriteBundle,
- input.Components.InputBuffer,
+ input.Components.ActionBuffer,
  client.Components.CameraIndex,
  spatial.Components.Shape,
  client.Components.SoundBundle,

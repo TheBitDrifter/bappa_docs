@@ -40,7 +40,7 @@ var assets embed.FS
 var actions = struct {
 	Movement input.Input
 }{
-	Movement: input.NewInput(),
+	Movement: input.NewAction(),
 }
 
 func lerp(start, end, t float64) float64 {
@@ -72,7 +72,7 @@ func main() {
 		log.Fatal(err)
 	}
 	client.RegisterGlobalRenderSystem(coldbrew_rendersystems.GlobalRenderer{})
-	client.RegisterGlobalClientSystem(coldbrew_clientsystems.InputBufferSystem{})
+	client.RegisterGlobalClientSystem(coldbrew_clientsystems.ActionBufferSystem{})
 
 	client.ActivateCamera()
 
@@ -83,9 +83,9 @@ func main() {
 	}
 }
 
-func exampleScenePlan(height, width int, sto warehouse.Storage) error {
+func exampleScenePlan(width, height int, sto warehouse.Storage) error {
 	spriteArchetype, err := sto.NewOrExistingArchetype(
-		input.Components.InputBuffer,
+		input.Components.ActionBuffer,
 		spatial.Components.Position,
 		client.Components.SpriteBundle,
 	)
@@ -93,7 +93,7 @@ func exampleScenePlan(height, width int, sto warehouse.Storage) error {
 		return err
 	}
 	err = spriteArchetype.Generate(1,
-		input.Components.InputBuffer,
+		input.Components.ActionBuffer,
 		spatial.NewPosition(255, 20),
 		client.NewSpriteBundle().
 			AddSprite("sprite.png", true),
@@ -112,14 +112,14 @@ type inputSystem struct {
 
 func (sys *inputSystem) Run(scene blueprint.Scene, dt float64) error {
 	query := warehouse.Factory.NewQuery().
-		And(input.Components.InputBuffer, spatial.Components.Position)
+		And(input.Components.ActionBuffer, spatial.Components.Position)
 	cursor := scene.NewCursor(query)
 
 	for range cursor.Next() {
 		pos := spatial.Components.Position.GetFromCursor(cursor)
-		inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
+		actionBuffer := input.Components.ActionBuffer.GetFromCursor(cursor)
 
-		if stampedMovement, ok := inputBuffer.ConsumeInput(actions.Movement); ok {
+		if stampedMovement, ok := actionBuffer.ConsumeInput(actions.Movement); ok {
 			sys.LastMovementX = float64(stampedMovement.X)
 			sys.LastMovementY = float64(stampedMovement.Y)
 			sys.HasTarget = true

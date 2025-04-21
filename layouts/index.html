@@ -7,8 +7,10 @@
     </div>
     <div class="col-lg-9 col-xl-8 text-center">
       <p class="lead">{{ .Params.lead | safeHTML }}</p>
-      <p id="disclaimer">EARLY DEVELOPMENT NOTICE: This game engine is a personal project in its early development stages. Features and documentation are subject to frequent changes, and things may break unexpectedly as development progresses. Please consider this ongoing evolution when experimenting with or building upon this project.</p>
-      <a class="btn btn-primary btn-cta rounded-pill btn-lg my-3" href="/docs/introduction-to-bappa" role="button">Get Started!</a>
+      <p id="disclaimer">
+        Early Development: This personal game engine project is under active development. Expect frequent changes, including potential breaking updates, as it evolves.
+      </p>
+      <a class="btn btn-primary btn-cta rounded-pill btn-lg my-3" href="/docs/introduction" role="button">Get Started!</a>
       {{ .Content }}
     </div>
   </div>

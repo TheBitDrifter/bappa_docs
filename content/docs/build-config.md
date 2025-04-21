@@ -3,10 +3,10 @@ title: "Build Tags and Configuration"
 description: "Customizing performance and behavior in your Bappa game"
 lead: "Control memory usage, performance, and behavior using Bappa's build tags and runtime configuration options."
 date: 2024-11-18T10:00:00+00:00
-lastmod: 2024-11-18T10:00:00+00:00
+lastmod: 2025-04-21T10:00:00+00:00
 draft: false
 images: []
-weight: 930
+weight: 960
 toc: true
 ---
 
@@ -30,7 +30,7 @@ The `unsafe` build tag has significant effects across the Bappa ecosystem:
 ```go
 // Performance differences are most noticeable in tight loops:
 cursor := scene.NewCursor(query)
-for cursor.Next() {
+for range cursor.Next() {
     // Component access is faster in unsafe mode
     position := spatial.Components.Position.GetFromCursor(cursor)
     // ...
@@ -66,20 +66,32 @@ Coldbrew has special configuration for asset loading that changes between develo
 
 ### Development Mode
 
-- Assets are loaded directly from the filesystem at `assets/`
-- Changes to assets can be seen immediately without recompilation
-- Set by default when `BAPPA_ENV` environment variable is not "production"
+- Assets are loaded directly from the filesystem
+- Set by default when not in production mode
 
 ### Production Mode
 
 - Assets are loaded from embedded filesystem (using Go's embed feature)
 - More efficient and ensures assets are included in the binary
-- Set when `BAPPA_ENV="production"`
+- Set using the environment package
 
 ```go
 // To enable production mode:
-export BAPPA_ENV=production
-go build
+go build -ldflags "-X 'github.com/TheBitDrifter/bappa/environment.Environment=production'" .
+```
+
+You can also check the current environment in your code:
+
+```go
+import "github.com/TheBitDrifter/bappa/environment"
+
+func main() {
+    if environment.IsProd() {
+        // Production-specific setup
+    } else {
+        // Development-specific setup
+    }
+}
 ```
 
 ## Cross-Package Configuration Considerations
@@ -110,6 +122,15 @@ When setting up a Bappa-based game, there are important cross-package considerat
 
 At its core, a Bappa game is a ebiten game. For WASM please see:
 <https://ebitengine.org/en/documents/webassembly.html>
+
+The environment package also provides a utility function to detect WebAssembly environments:
+
+```go
+// Check if running in WebAssembly
+if environment.IsWASM() {
+    // WASM-specific behavior
+}
+```
 
 ## Conclusion
 

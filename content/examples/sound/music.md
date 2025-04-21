@@ -10,7 +10,7 @@ toc: true
 
 {{< callout context="note" title="Instructions" icon="outline/info-circle" >}}
 
-- Click on demo to allow inputs
+- Click the demo window to activate controls
 - Press 1 key to toggle (turn on) music
 
 {{< /callout >}}
@@ -76,11 +76,11 @@ func main() {
 }
 
 var musicSoundConfig = client.SoundConfig{
- Path:             "music.wav",
+ Path:             "sounds/music.wav",
  AudioPlayerCount: 1,
 }
 
-func exampleScenePlan(height, width int, sto warehouse.Storage) error {
+func exampleScenePlan(width, height int, sto warehouse.Storage) error {
  spriteArchetype, err := sto.NewOrExistingArchetype(
   client.Components.SoundBundle,
  )
@@ -128,8 +128,8 @@ func (sys *musicSystem) Run(lc coldbrew.LocalClient, scene coldbrew.Scene) error
 
 type instructions struct{}
 
-func (instructions) Render(scene coldbrew.Scene, screen coldbrew.Screen, cu coldbrew.CameraUtility) {
- cam := cu.ActiveCamerasFor(scene)[0]
+func (instructions) Render(scene coldbrew.Scene, screen coldbrew.Screen, c coldbrew.LocalClient) {
+ cam := c.ActiveCamerasFor(scene)[0]
  instructionText := "Press 1 to toggle music!"
  textFace := text.NewGoXFace(basicfont.Face7x13)
  cam.DrawTextBasicStatic(instructionText, &text.DrawOptions{}, textFace, vector.Two{

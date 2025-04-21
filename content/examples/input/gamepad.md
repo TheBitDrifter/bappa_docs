@@ -10,7 +10,7 @@ toc: false
 
 {{< callout context="note" title="Instructions" icon="outline/info-circle" >}}
 
-- Click on demo to allow inputs
+- Click the demo window to activate controls
 - Use left stick to move sprite
 - Buttons also move sprite (layout may be inconsistent between controllers)
 
@@ -42,13 +42,13 @@ import (
 var assets embed.FS
 
 var actions = struct {
- Movement, Up, Down, Left, Right input.Input
+ Movement, Up, Down, Left, Right input.Action
 }{
- Movement: input.NewInput(),
- Up:       input.NewInput(),
- Down:     input.NewInput(),
- Left:     input.NewInput(),
- Right:    input.NewInput(),
+ Movement: input.NewAction(),
+ Up:       input.NewAction(),
+ Down:     input.NewAction(),
+ Left:     input.NewAction(),
+ Right:    input.NewAction(),
 }
 
 func lerp(start, end, t float64) float64 {
@@ -80,7 +80,7 @@ func main() {
   log.Fatal(err)
  }
  client.RegisterGlobalRenderSystem(coldbrew_rendersystems.GlobalRenderer{})
- client.RegisterGlobalClientSystem(coldbrew_clientsystems.InputBufferSystem{})
+ client.RegisterGlobalClientSystem(coldbrew_clientsystems.ActionBufferSystem{})
  client.ActivateCamera()
  receiver, _ := client.ActivateReceiver()
  receiver.RegisterPad(0)
@@ -97,9 +97,9 @@ func main() {
  }
 }
 
-func exampleScenePlan(height, width int, sto warehouse.Storage) error {
+func exampleScenePlan(width, height int, sto warehouse.Storage) error {
  spriteArchetype, err := sto.NewOrExistingArchetype(
-  input.Components.InputBuffer,
+  input.Components.ActionBuffer,
   spatial.Components.Position,
   client.Components.SpriteBundle,
  )
@@ -107,7 +107,7 @@ func exampleScenePlan(height, width int, sto warehouse.Storage) error {
   return err
  }
  err = spriteArchetype.Generate(1,
-  input.Components.InputBuffer,
+  input.Components.ActionBuffer,
   spatial.NewPosition(255, 20),
   client.NewSpriteBundle().
    AddSprite("sprite.png", true),
@@ -125,15 +125,15 @@ type inputSystem struct {
 
 func (sys *inputSystem) Run(scene blueprint.Scene, dt float64) error {
  query := warehouse.Factory.NewQuery().
-  And(input.Components.InputBuffer, spatial.Components.Position)
+  And(input.Components.ActionBuffer, spatial.Components.Position)
 
  cursor := scene.NewCursor(query)
 
  for range cursor.Next() {
   pos := spatial.Components.Position.GetFromCursor(cursor)
-  inputBuffer := input.Components.InputBuffer.GetFromCursor(cursor)
+  actionBuffer := input.Components.ActionBuffer.GetFromCursor(cursor)
 
-  if stampedMovement, ok := inputBuffer.ConsumeInput(actions.Movement); ok {
+  if stampedMovement, ok := actionBuffer.ConsumeAction(actions.Movement); ok {
    sys.StickX = float64(stampedMovement.X)
    sys.StickY = float64(stampedMovement.Y)
 
@@ -154,16 +154,16 @@ func (sys *inputSystem) Run(scene blueprint.Scene, dt float64) error {
 
   moveSpeed := 2.0
 
-  if _, ok := inputBuffer.ConsumeInput(actions.Up); ok {
+  if _, ok := actionBuffer.ConsumeAction(actions.Up); ok {
    pos.Y -= moveSpeed
   }
-  if _, ok := inputBuffer.ConsumeInput(actions.Down); ok {
+  if _, ok := actionBuffer.ConsumeAction(actions.Down); ok {
    pos.Y += moveSpeed
   }
-  if _, ok := inputBuffer.ConsumeInput(actions.Left); ok {
+  if _, ok := actionBuffer.ConsumeAction(actions.Left); ok {
    pos.X -= moveSpeed
   }
-  if _, ok := inputBuffer.ConsumeInput(actions.Right); ok {
+  if _, ok := actionBuffer.ConsumeAction(actions.Right); ok {
    pos.X += moveSpeed
   }
  }

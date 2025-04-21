@@ -10,11 +10,11 @@ toc: false
 
 {{< callout context="note" title="Instructions" icon="outline/info-circle" >}}
 
-- Click on demo to allow inputs
+- Click the demo window to activate controls
 - Press 0 to toggle (turn off) debugger view
-- WASD controls player
+- Use WASD or Arrow Keys to move the players.
 - The statue can be moved
-- There is two scenes
+- There are two scenes included
 - Try not to get lost behind a tree
 
 {{< /callout >}}
