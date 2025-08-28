@@ -402,6 +402,8 @@
       "next-steps",
       "non-destructive-updates",
       "not-operator",
+      "note-about-wasm",
+      "note-on-browser-version",
       "offcanvasNavMain",
       "offcanvasNavMainLabel",
       "offcanvasNavSection",

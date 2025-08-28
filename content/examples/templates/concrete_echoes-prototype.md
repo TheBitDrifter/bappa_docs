@@ -10,6 +10,10 @@ toc: false
 
 {{< wasm-demo src="templates/concrete_echos.html" width="640px" height=360"" autoplay="true" >}}
 
+##### Note on Browser Version
+
+This prototype was developed as a native application. The browser version is provided for accessibility, but for the best performance and experience, I recommend downloading the Mac, Windows, or Linux binary.
+
 ```go
 https://github.com/TheBitDrifter/concrete_echos
 ```
@@ -31,6 +35,7 @@ _(Gamepad recommended for the best experience)_
 - **Shift Swap Target Right:** I
 - **Shift Swap Target Left:** U
 - **Swap Target Nearest:** O
+- **Mute Music:** M
 
 #### Gamepad (XInput)
 
