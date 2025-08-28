@@ -40,8 +40,9 @@ _(Press keyboard B-Key to initiate gamepad rebind stepper, defaults based on ps4
 - **Jump:** X Button
 - **Dash / Dodge:** Left Trigger (LT)
 - **Interact / Absorb:** Triangle Button
+- **Cancel:** Square Button
 - **Attack:** Circle Button
-- Swap: Right Trigger (RT)
+- **Swap:** Right Trigger (RT)
 - **Peek Camera:** Right Stick
 - **Shift Swap Target Right:** D Pad Left
 - **Shift Swap Target Left:** D Pad Right
