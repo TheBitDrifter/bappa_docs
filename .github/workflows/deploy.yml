@@ -40,7 +40,8 @@ jobs:
 
       - name: Sync public folder to S3
         run: |
-          aws s3 sync public/ s3://bappa-docs/ --delete
+          # Excludes the specific wasm file from being deleted during the sync
+          aws s3 sync public/ s3://bappa-docs/ --delete --exclude "wasmbin/templates/concrete_echos.wasm"
 
       - name: Invalidate CloudFront cache
         run: |
