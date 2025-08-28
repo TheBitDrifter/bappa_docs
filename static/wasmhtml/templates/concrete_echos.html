@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #fullscreen-btn {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            z-index: 9999;
+            background-color: #458588;
+            color: #ebdbb2;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-family: sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        #fullscreen-btn:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<button id="fullscreen-btn">Fullscreen</button>
+
+<script src="/wasmjs/exec.js"></script>
+<script src="/wasmjs/loader.js"></script>
+<script>
+const go = new Go();
+WebAssembly.instantiateStreaming(fetch("../../wasmbin/templates/concrete_echos.wasm"), go.importObject).then(result => {
+    go.run(result.instance);
+});
+</script>
+
+<script>
+    const fullscreenButton = document.getElementById('fullscreen-btn');
+    const mainElement = document.documentElement;
+
+    if (mainElement.requestFullscreen) {
+        fullscreenButton.addEventListener('click', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                mainElement.requestFullscreen();
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                fullscreenButton.textContent = 'Exit';
+            } else {
+                fullscreenButton.textContent = 'Fullscreen';
+            }
+        });
+
+    } else {
+        fullscreenButton.style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
