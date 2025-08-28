@@ -15,4 +15,5 @@ node_modules/
 npm-debug.log
 yarn-error.log
 .DS_Store
-./static/wasmbin/templates/concrete_echos.wasm
+
+static/wasmbin/templates/concrete_echos.wasm
